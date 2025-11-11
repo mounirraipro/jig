@@ -1,6 +1,7 @@
 'use client';
 
-import { useState, useEffect, useCallback, useRef } from 'react';
+import Image from 'next/image';
+import { useState, useEffect, useCallback, useRef, useMemo } from 'react';
 import { Tile, GameImage } from '../types/game';
 import { splitImage, shuffleArray } from '../utils/imageSplitter';
 import PuzzleGrid from '../components/PuzzleGrid';
@@ -8,28 +9,20 @@ import Stats from '../components/Stats';
 import Controls from '../components/Controls';
 import WinModal from '../components/WinModal';
 
-const GAME_IMAGES: GameImage[] = [
-  { 
-    name: 'Mountain Lake', 
-    url: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=600&h=900&fit=crop'
-  },
-  { 
-    name: 'City Lights', 
-    url: 'https://images.unsplash.com/photo-1480714378408-67cf0d13bc1b?w=600&h=900&fit=crop'
-  },
-  { 
-    name: 'Ocean Sunset', 
-    url: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=600&h=900&fit=crop'
-  },
-  { 
-    name: 'Northern Lights', 
-    url: 'https://images.unsplash.com/photo-1483347756197-71ef80e95f73?w=600&h=900&fit=crop'
-  },
-  { 
-    name: 'Desert Dunes', 
-    url: 'https://images.unsplash.com/photo-1509316785289-025f5b846b35?w=600&h=900&fit=crop'
-  },
-];
+function formatImageName(filename: string): string {
+  const withoutExtension = filename.replace(/\.[^/.]+$/, '');
+  const spaced = withoutExtension.replace(/[_\-]+/g, ' ').trim();
+
+  if (!spaced) {
+    return 'Puzzle Image';
+  }
+
+  return spaced
+    .split(' ')
+    .filter(Boolean)
+    .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(' ');
+}
 
 export default function GamePage() {
   const [tiles, setTiles] = useState<Tile[]>([]);
@@ -40,6 +33,9 @@ export default function GamePage() {
   const [isComplete, setIsComplete] = useState(false);
   const [currentImage, setCurrentImage] = useState<GameImage | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [availableImages, setAvailableImages] = useState<GameImage[]>([]);
+  const [loadError, setLoadError] = useState<string | null>(null);
+  const [hintedTileId, setHintedTileId] = useState<number | null>(null);
   const timerRef = useRef<NodeJS.Timeout | null>(null);
   const hintTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
@@ -59,56 +55,125 @@ export default function GamePage() {
     }
   }, [startTime, isComplete, tiles.length]);
 
-  // Initialize game on mount
-  useEffect(() => {
-    initializeGame();
-  }, []);
-
-  const initializeGame = async () => {
-    setIsLoading(true);
-    const randomImage = GAME_IMAGES[Math.floor(Math.random() * GAME_IMAGES.length)];
-    await createNewGame(randomImage);
-    setIsLoading(false);
-  };
-
-  const createNewGame = async (image: GameImage) => {
-    try {
-      const pieces = await splitImage(image.url);
-      const newTiles: Tile[] = pieces.map((piece, index) => ({
-        id: index,
-        currentPos: index,
-        correctPos: index,
-        imageData: piece,
-      }));
-
-      // Shuffle tiles
-      const shuffledTiles = shuffleTiles(newTiles);
-      
-      setTiles(shuffledTiles);
-      setCurrentImage(image);
-      setSelectedTile(null);
-      setMoves(0);
-      setStartTime(Date.now());
-      setIsComplete(false);
-    } catch (error) {
-      console.error('Failed to create game:', error);
-    }
-  };
-
-  const shuffleTiles = (tilesToShuffle: Tile[]): Tile[] => {
+  const shuffleTiles = useCallback((tilesToShuffle: Tile[]): Tile[] => {
     const positions = tilesToShuffle.map(t => t.currentPos);
     const shuffledPositions = shuffleArray(positions);
-    
+
     const shuffled = tilesToShuffle.map((tile, index) => ({
       ...tile,
       currentPos: shuffledPositions[index],
     }));
 
     return shuffled.sort((a, b) => a.currentPos - b.currentPos);
-  };
+  }, []);
+
+  const createNewGame = useCallback(async (image: GameImage) => {
+    const pieces = await splitImage(image.url);
+    const newTiles: Tile[] = pieces.map((piece, index) => ({
+      id: index,
+      currentPos: index,
+      correctPos: index,
+      imageData: piece,
+    }));
+
+    const shuffledTiles = shuffleTiles(newTiles);
+
+    setTiles(shuffledTiles);
+    setCurrentImage(image);
+    setSelectedTile(null);
+    setMoves(0);
+    setStartTime(Date.now());
+    setIsComplete(false);
+    setHintedTileId(null);
+    if (hintTimeoutRef.current) {
+      clearTimeout(hintTimeoutRef.current);
+      hintTimeoutRef.current = null;
+    }
+  }, [shuffleTiles]);
+
+  const initializeGame = useCallback(async () => {
+    if (availableImages.length === 0) {
+      setLoadError('No puzzle images available.');
+      setIsLoading(false);
+      return;
+    }
+
+    setIsLoading(true);
+    const randomImage = availableImages[Math.floor(Math.random() * availableImages.length)];
+
+    try {
+      await createNewGame(randomImage);
+      setLoadError(null);
+    } catch (error) {
+      console.error('Failed to create game:', error);
+      setLoadError('Failed to start a new puzzle. Please try again.');
+    } finally {
+      setIsLoading(false);
+    }
+  }, [availableImages, createNewGame]);
+
+  const loadManifest = useCallback(async () => {
+    setIsLoading(true);
+
+    try {
+      const response = await fetch('/jig-images/manifest.json');
+
+      if (!response.ok) {
+        throw new Error(`Request failed with status ${response.status}`);
+      }
+
+      const data: unknown = await response.json();
+
+      if (!Array.isArray(data) || data.length === 0) {
+        throw new Error('Manifest is empty or invalid');
+      }
+
+      const mappedImages = (data as string[])
+        .sort()
+        .map(filename => ({
+          name: formatImageName(filename),
+          url: `/jig-images/${filename}`,
+        }));
+
+      setAvailableImages(mappedImages);
+      setLoadError(null);
+    } catch (error) {
+      console.error('Failed to load image manifest:', error);
+      setAvailableImages([]);
+      setLoadError('Failed to load puzzle collection. Please retry.');
+      setIsLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    loadManifest();
+  }, [loadManifest]);
+
+  useEffect(() => {
+    if (availableImages.length > 0) {
+      initializeGame();
+    }
+  }, [availableImages, initializeGame]);
+
+  const handleRetry = useCallback(() => {
+    if (availableImages.length > 0) {
+      setLoadError(null);
+      initializeGame();
+    } else {
+      setLoadError(null);
+      loadManifest();
+    }
+  }, [availableImages.length, initializeGame, loadManifest]);
+
+  const progress = useMemo(() => {
+    if (tiles.length === 0) return 0;
+    const completed = tiles.filter(tile => tile.currentPos === tile.correctPos).length;
+    return (completed / tiles.length) * 100;
+  }, [tiles]);
 
   const handleTileClick = (index: number) => {
     if (isComplete) return;
+    setHintedTileId(null);
 
     if (selectedTile === null) {
       setSelectedTile(index);
@@ -145,6 +210,7 @@ export default function GamePage() {
       const shuffled = shuffleTiles(tiles);
       setTiles(shuffled);
       setSelectedTile(null);
+      setHintedTileId(null);
     }
   };
 
@@ -153,6 +219,7 @@ export default function GamePage() {
     if (misplacedTile) {
       const index = tiles.findIndex(t => t.currentPos === misplacedTile.currentPos);
       setSelectedTile(index);
+      setHintedTileId(misplacedTile.id);
       
       // Clear previous timeout
       if (hintTimeoutRef.current) clearTimeout(hintTimeoutRef.current);
@@ -160,6 +227,7 @@ export default function GamePage() {
       // Auto-deselect after 2 seconds
       hintTimeoutRef.current = setTimeout(() => {
         setSelectedTile(null);
+        setHintedTileId(null);
       }, 2000);
     }
   };
@@ -173,61 +241,82 @@ export default function GamePage() {
     initializeGame();
   };
 
+  if (loadError) {
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-slate-100 px-4">
+        <div className="w-full max-w-md rounded-3xl border border-slate-200 bg-white p-8 text-center shadow-lg">
+          <h1 className="text-2xl font-semibold text-slate-900">Something went wrong</h1>
+          <p className="mt-4 text-sm text-slate-600">{loadError}</p>
+          <button
+            onClick={handleRetry}
+            className="mt-6 inline-flex w-full items-center justify-center rounded-xl bg-slate-900 px-6 py-3 text-xs font-semibold uppercase tracking-[0.28em] text-white transition hover:bg-slate-700"
+          >
+            Try Again
+          </button>
+        </div>
+      </div>
+    );
+  }
+
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-slate-900 flex items-center justify-center">
-        <div className="text-white text-xl">Loading puzzle...</div>
+      <div className="flex min-h-screen items-center justify-center bg-slate-100">
+        <div className="flex h-14 w-14 items-center justify-center rounded-full border-2 border-slate-300">
+          <div className="h-8 w-8 animate-spin rounded-full border-2 border-slate-900 border-t-transparent" />
+        </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-slate-900 flex items-center justify-center p-4">
-      <div className="bg-slate-800 rounded-3xl p-8 max-w-lg w-full shadow-2xl">
-        {/* Header */}
-        <div className="bg-slate-700 p-5 rounded-2xl text-center mb-6">
-          <h1 className="text-white text-xl font-semibold">
-            Move the cards to complete the picture
-          </h1>
+    <div className="flex h-svh items-center justify-center bg-slate-100 px-2 py-3 sm:px-4 sm:py-4">
+      <div className="flex h-full w-full max-h-[92svh] max-w-[1080px] flex-col rounded-3xl bg-white/85 p-3 shadow-lg backdrop-blur-sm sm:p-5">
+        <div className="flex flex-1 flex-col overflow-hidden">
+          <div className="flex items-center justify-center">
+            <Stats moves={moves} time={time} progress={progress} />
+          </div>
+
+          <div className="flex flex-1 items-center justify-center overflow-hidden">
+            <div className="flex w-full max-w-[640px] flex-col items-center gap-4 sm:gap-6">
+              {currentImage && (
+                <div className="block overflow-hidden rounded-lg border border-slate-200 sm:hidden">
+                  <Image
+                    src={currentImage.url}
+                    alt={currentImage.name}
+                    width={192}
+                    height={128}
+                    className="h-16 w-24 object-cover"
+                    priority
+                  />
+                </div>
+              )}
+              <div className="w-full max-w-[360px] sm:max-w-[440px] md:max-w-[500px] lg:max-w-[520px]">
+                <PuzzleGrid
+                  tiles={tiles}
+                  selectedTile={selectedTile}
+                  hintedTileId={hintedTileId}
+                  onTileClick={handleTileClick}
+                />
+              </div>
+            </div>
+          </div>
         </div>
 
-        {/* Stats */}
-        <div className="mb-6">
-          <Stats moves={moves} time={time} />
-        </div>
-
-        {/* Puzzle Grid */}
-        <div className="mb-6">
-          <PuzzleGrid
-            tiles={tiles}
-            selectedTile={selectedTile}
-            onTileClick={handleTileClick}
-          />
-        </div>
-
-        {/* Controls */}
-        <div className="mb-6">
+        <div className="mt-3">
           <Controls
             onNewGame={handleNewGame}
             onShuffle={handleShuffle}
             onHint={handleHint}
           />
         </div>
-
-        {/* Footer */}
-        <div className="bg-orange-500 p-4 rounded-2xl text-center">
-          <h2 className="text-white text-xl font-bold uppercase tracking-wider">
-            Simple To Play!
-          </h2>
-        </div>
       </div>
 
-      {/* Win Modal */}
       <WinModal
         isOpen={isComplete}
         moves={moves}
         time={time}
         completedImage={currentImage?.url || ''}
+        completedImageName={currentImage?.name || ''}
         onPlayAgain={handlePlayAgain}
       />
     </div>
