@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback, useRef, useMemo, Suspense } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
+import Image from 'next/image';
 import { Tile, GameImage, PuzzleSet } from '../types/game';
 import { splitImage, shuffleArray } from '../utils/imageSplitter';
 import { saveLevelProgress } from '../utils/storage';
@@ -559,7 +560,7 @@ function GamePageContent() {
             >
               <div 
                 id="game-container"
-                className="flex aspect-[3/4] w-full max-w-[600px] items-center justify-center overflow-hidden md:rounded-lg md:shadow-inner"
+                className="flex aspect-3/4 w-full max-w-[600px] items-center justify-center overflow-hidden md:rounded-lg md:shadow-inner"
                 style={{ 
                   background: isHardLevel ? 'var(--color-primary)' : 'var(--color-light-gray)',
                   margin: '0 auto',
@@ -608,15 +609,14 @@ function GamePageContent() {
                               width: '100%',
                             }}
                           >
-                            <img
+                            <Image
                               src={previewImage}
                               alt="Puzzle preview"
+                              fill
                               style={{
-                                width: '100%',
-                                height: '100%',
                                 objectFit: 'cover',
-                                display: 'block',
                               }}
+                              unoptimized
                             />
                           </div>
                           <div

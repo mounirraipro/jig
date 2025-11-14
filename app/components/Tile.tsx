@@ -6,6 +6,7 @@ import {
   useState,
   type PointerEvent as ReactPointerEvent,
 } from 'react';
+import Image from 'next/image';
 
 import type { TileMergeDirections } from '../types/game';
 
@@ -218,19 +219,16 @@ export default function Tile({
         boxSizing: 'border-box',
       }}
     >
-      <img
+      <Image
         src={imageData}
         alt="Puzzle piece"
+        fill
         style={{
-          display: 'block',
-          width: '100%',
-          height: '100%',
-          margin: 0,
-          padding: 0,
           objectFit: 'cover',
           objectPosition: 'center',
         }}
         draggable={false}
+        unoptimized
       />
 
       {isHinted && !isCorrect && (
