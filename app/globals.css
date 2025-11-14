@@ -357,3 +357,36 @@ body {
   animation: tileWaterCorner 1.2s cubic-bezier(0.4, 0, 0.2, 1) forwards;
 }
 
+/* Game Container Canvas Styling - from reference */
+#game-container canvas {
+  -ms-touch-action: none;
+  touch-action: none;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+/* Mobile optimizations - from reference */
+@media (max-width: 768px) {
+  a,
+  button {
+    min-width: 48px;
+    min-height: 48px;
+  }
+  
+  body {
+    -webkit-text-size-adjust: 100%;
+    -moz-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+    font-size: 16px;
+  }
+  
+  * {
+    -webkit-tap-highlight-color: rgba(255, 191, 0, 0.2);
+  }
+  
+  body {
+    -webkit-overflow-scrolling: touch;
+    overflow-scrolling: touch;
+  }
+}
+

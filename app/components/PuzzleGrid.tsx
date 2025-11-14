@@ -98,7 +98,6 @@ export default function PuzzleGrid({
   const groupBorderEdges = useMemo(() => {
     if (tiles.length === 0) return new Map<number, { top: boolean; right: boolean; bottom: boolean; left: boolean }>();
 
-    const size = gridSize;
     const edges = new Map<number, { top: boolean; right: boolean; bottom: boolean; left: boolean }>();
 
     tiles.forEach((tile, index) => {
@@ -108,8 +107,6 @@ export default function PuzzleGrid({
       }
 
       const merge = mergeDirectionsByIndex[index] ?? createEmptyMerge();
-      const row = Math.floor(index / size);
-      const col = index % size;
 
       // Border shows on edges that are not merged (outer edges of the group)
       edges.set(index, {
@@ -121,25 +118,28 @@ export default function PuzzleGrid({
     });
 
     return edges;
-  }, [tiles, gridSize, mergeDirectionsByIndex]);
+  }, [tiles, mergeDirectionsByIndex]);
 
   return (
     <div
-      className="grid w-full gap-0 rounded-2xl"
       style={{
-        gridTemplateColumns: `repeat(${gridSize}, minmax(0, 1fr))`,
-        gridTemplateRows: `repeat(${gridSize}, minmax(0, 1fr))`,
+        display: 'grid',
+        gridTemplateColumns: `repeat(${gridSize}, 1fr)`,
+        gridTemplateRows: `repeat(${gridSize}, 1fr)`,
         borderRadius: compact ? 'var(--radius-round-medium)' : 'var(--radius-round-large)',
         background: 'var(--color-surface)',
         boxShadow: 'var(--shadow-soft)',
         border: 'var(--border-thin)',
-        padding: compact ? 'clamp(4px, 1vw, 8px)' : 'clamp(8px, 1.5vw, 16px)',
-        aspectRatio: '1 / 1',
-        maxWidth: '100%',
-        width: '100%',
-        height: 'auto',
-        maxHeight: compact ? 'min(55vh, 55vw)' : 'min(70vh, 70vw)',
+        padding: 0,
+        aspectRatio: '3 / 4',
+        width: '80%',
+        maxWidth: '400px',
+        maxHeight: '100%',
         gap: 0,
+        rowGap: 0,
+        columnGap: 0,
+        margin: '0 auto',
+        boxSizing: 'border-box',
       }}
     >
       {tiles.map((tile, index) => (

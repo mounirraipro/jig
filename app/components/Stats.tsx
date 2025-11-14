@@ -13,21 +13,21 @@ export default function Stats({ moves, time, progress, compact = false }: StatsP
   if (compact) {
     return (
       <div 
-        className="flex flex-wrap items-center justify-center gap-2 rounded-xl px-2 py-1.5"
+        className="flex flex-wrap items-center justify-center gap-1.5 rounded-lg px-1.5 py-1"
         style={{
           background: 'var(--color-surface)',
           borderRadius: 'var(--radius-round-medium)',
           boxShadow: 'var(--shadow-soft)',
-          padding: 'var(--spacing-xs) var(--spacing-sm)',
+          padding: 'var(--spacing-xxs) var(--spacing-xs)',
         }}
       >
-        <div className="flex min-w-[60px] flex-col items-center">
+        <div className="flex min-w-[50px] flex-col items-center">
           <span 
             className="text-xs font-medium uppercase tracking-wide"
             style={{
               color: 'var(--color-text-secondary)',
-              fontSize: '10px',
-              lineHeight: '14px',
+              fontSize: '9px',
+              lineHeight: '12px',
               letterSpacing: '0.1em',
             }}
           >
@@ -37,8 +37,8 @@ export default function Stats({ moves, time, progress, compact = false }: StatsP
             className="font-bold"
             style={{
               color: 'var(--color-text-primary)',
-              fontSize: '18px',
-              lineHeight: '22px',
+              fontSize: '16px',
+              lineHeight: '20px',
               fontWeight: 700,
             }}
           >
@@ -46,13 +46,13 @@ export default function Stats({ moves, time, progress, compact = false }: StatsP
           </span>
         </div>
         
-        <div className="flex min-w-[60px] flex-col items-center">
+        <div className="flex min-w-[50px] flex-col items-center">
           <span 
             className="text-xs font-medium uppercase tracking-wide"
             style={{
               color: 'var(--color-text-secondary)',
-              fontSize: '10px',
-              lineHeight: '14px',
+              fontSize: '9px',
+              lineHeight: '12px',
               letterSpacing: '0.1em',
             }}
           >
@@ -62,8 +62,8 @@ export default function Stats({ moves, time, progress, compact = false }: StatsP
             className="font-bold"
             style={{
               color: 'var(--color-text-primary)',
-              fontSize: '18px',
-              lineHeight: '22px',
+              fontSize: '16px',
+              lineHeight: '20px',
               fontWeight: 700,
             }}
           >
@@ -71,13 +71,13 @@ export default function Stats({ moves, time, progress, compact = false }: StatsP
           </span>
         </div>
         
-        <div className="flex min-w-[100px] flex-1 flex-col">
+        <div className="flex min-w-[80px] flex-1 flex-col">
           <div 
             className="flex items-center justify-between text-xs font-medium uppercase tracking-wide"
             style={{
               color: 'var(--color-text-secondary)',
-              fontSize: '10px',
-              lineHeight: '14px',
+              fontSize: '9px',
+              lineHeight: '12px',
               letterSpacing: '0.1em',
             }}
           >
@@ -85,7 +85,7 @@ export default function Stats({ moves, time, progress, compact = false }: StatsP
             <span>{formattedProgress}%</span>
           </div>
           <div 
-            className="relative mt-1 h-0.5 overflow-hidden rounded-full"
+            className="relative mt-0.5 h-0.5 overflow-hidden rounded-full"
             style={{
               background: 'var(--color-light-gray)',
               borderRadius: 'var(--radius-pill)',
