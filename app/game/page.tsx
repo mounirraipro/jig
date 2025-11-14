@@ -2,7 +2,6 @@
 
 import { useState, useEffect, useCallback, useRef, useMemo, Suspense } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
-import Image from 'next/image';
 import { Tile, GameImage, PuzzleSet } from '../types/game';
 import { splitImage, shuffleArray } from '../utils/imageSplitter';
 import { saveLevelProgress } from '../utils/storage';
@@ -58,11 +57,8 @@ function GamePageContent() {
   const [hintedTileId, setHintedTileId] = useState<number | null>(null);
   const [settings, setSettings] = useState(getSettings());
   const [earnedStars, setEarnedStars] = useState(0);
-  const [showPreview, setShowPreview] = useState(false);
-  const [previewImage, setPreviewImage] = useState<string | null>(null);
   const timerRef = useRef<NodeJS.Timeout | null>(null);
   const hintTimeoutRef = useRef<NodeJS.Timeout | null>(null);
-  const previewTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const soundManagerRef = useRef(getSoundManager());
   const backgroundMusicRef = useRef(getBackgroundMusicManager());
   const previousCorrectCountRef = useRef(0);
@@ -73,16 +69,16 @@ function GamePageContent() {
     backgroundMusicRef.current.setEnabled(!settings.muted);
   }, [settings.muted]);
 
-  // Start background music when game starts (after preview is dismissed)
+  // Start background music when game starts
   useEffect(() => {
-    if (!showPreview && tiles.length > 0 && !isComplete && !settings.muted) {
+    if (tiles.length > 0 && !isComplete && !settings.muted) {
       // Delay to allow user interaction
       const timer = setTimeout(() => {
         backgroundMusicRef.current.play();
       }, 500);
       return () => clearTimeout(timer);
     }
-  }, [showPreview, tiles.length, isComplete, settings.muted]);
+  }, [tiles.length, isComplete, settings.muted]);
 
   // Stop background music when game ends or component unmounts
   useEffect(() => {
@@ -114,7 +110,7 @@ function GamePageContent() {
 
   // Timer effect
   useEffect(() => {
-    if (!isComplete && tiles.length > 0 && settings.playWithTime && !showPreview) {
+    if (!isComplete && tiles.length > 0 && settings.playWithTime) {
       timerRef.current = setInterval(() => {
         const elapsed = Math.floor((Date.now() - startTime) / 1000);
         setTimeInSeconds(elapsed);
@@ -129,7 +125,7 @@ function GamePageContent() {
     } else if (!settings.playWithTime) {
       setTime('--:--');
     }
-  }, [startTime, isComplete, tiles.length, settings.playWithTime, showPreview]);
+  }, [startTime, isComplete, tiles.length, settings.playWithTime]);
 
   const shuffleTiles = useCallback((tilesToShuffle: Tile[]): Tile[] => {
     const positions = tilesToShuffle.map(t => t.currentPos);
@@ -143,25 +139,8 @@ function GamePageContent() {
     return shuffled.sort((a, b) => a.currentPos - b.currentPos);
   }, []);
 
-  const createNewGame = useCallback(async (image: GameImage, puzzleIdx = 0, showPreviewFirst = true) => {
-    // Show preview first (only for first puzzle in a game)
-    if (showPreviewFirst && puzzleIdx === 0) {
-      setPreviewImage(image.url);
-      setShowPreview(true);
-      
-      // Auto-hide preview after 3 seconds
-      if (previewTimeoutRef.current) {
-        clearTimeout(previewTimeoutRef.current);
-      }
-      previewTimeoutRef.current = setTimeout(() => {
-        setShowPreview(false);
-        setPreviewImage(null);
-      }, 3000);
-      
-      // Wait a bit for preview to show, then split image
-      await new Promise(resolve => setTimeout(resolve, 100));
-    }
-    
+  const createNewGame = useCallback(async (image: GameImage, puzzleIdx = 0) => {
+    // Preview disabled - start game immediately
     const pieces = await splitImage(image.url);
     const newTiles: Tile[] = pieces.map((piece, index) => ({
       id: index + (puzzleIdx * 1000), // Unique IDs for multiple puzzles
@@ -258,10 +237,6 @@ function GamePageContent() {
     if (hintTimeoutRef.current) {
       clearTimeout(hintTimeoutRef.current);
       hintTimeoutRef.current = null;
-    }
-    if (previewTimeoutRef.current) {
-      clearTimeout(previewTimeoutRef.current);
-      previewTimeoutRef.current = null;
     }
     setLoadError(null);
     setIsLoading(false);
@@ -544,12 +519,12 @@ function GamePageContent() {
 
   return (
     <div className="min-h-screen" style={{ background: 'var(--color-surface)' }}>
-      <div id="play-now" className="bg-white py-4 md:py-8" aria-label="Play game section">
-        <div className="mx-auto flex max-w-6xl flex-col items-center gap-10 px-0 md:px-6 text-center lg:px-8">
+      <div id="play-now" className="bg-white py-2 md:py-8" aria-label="Play game section">
+        <div className="mx-auto flex max-w-6xl flex-col items-center gap-4 md:gap-10 px-0 md:px-6 text-center lg:px-8">
           <div className="flex w-full justify-center">
             <div 
               id="game-wrapper" 
-              className="w-full md:max-w-3xl md:rounded-lg md:border bg-white md:p-4 md:shadow-lg"
+              className="w-full max-w-3xl rounded-lg border bg-white p-4 shadow-lg"
               style={{
                 borderColor: 'rgba(178, 223, 219, 0.3)', // turquoise-light/30
                 borderRadius: 'var(--radius-round-large)',
@@ -560,106 +535,31 @@ function GamePageContent() {
             >
               <div 
                 id="game-container"
-                className="flex aspect-3/4 w-full max-w-[600px] items-center justify-center overflow-hidden md:rounded-lg md:shadow-inner"
+                className="flex aspect-2/3 md:aspect-3/4 w-full max-w-[600px] items-center justify-center overflow-hidden rounded-lg shadow-inner"
                 style={{ 
                   background: isHardLevel ? 'var(--color-primary)' : 'var(--color-light-gray)',
                   margin: '0 auto',
                   position: 'relative',
+                  minHeight: 'calc(100vh - 120px)',
                 }}
               >
-                {showPreview && previewImage ? (
-                  <div
-                    className="absolute inset-0 flex items-center justify-center z-20 cursor-pointer"
-                    onClick={() => {
-                      setShowPreview(false);
-                      setPreviewImage(null);
-                      if (previewTimeoutRef.current) {
-                        clearTimeout(previewTimeoutRef.current);
-                        previewTimeoutRef.current = null;
-                      }
-                      // Start timer when preview is dismissed
-                      setStartTime(Date.now());
-                    }}
-                    style={{
-                      background: 'var(--color-light-gray)',
-                      transition: 'opacity var(--motion-normal) var(--motion-easing)',
-                      width: '100%',
-                      height: '100%',
-                      borderRadius: 'inherit',
-                    }}
-                  >
-                        <div
-                          className="relative w-full h-full flex flex-col items-center justify-center"
-                          style={{
-                            padding: 'var(--spacing-sm)',
-                          }}
-                        >
-                          <div
-                            className="relative flex-1 w-full"
-                            style={{
-                              background: 'var(--color-surface)',
-                              borderRadius: 'var(--radius-round-large)',
-                              boxShadow: 'var(--shadow-elevated)',
-                              border: 'var(--border-thin)',
-                              overflow: 'hidden',
-                              display: 'flex',
-                              alignItems: 'center',
-                              justifyContent: 'center',
-                              minHeight: 0,
-                              width: '100%',
-                            }}
-                          >
-                            <Image
-                              src={previewImage}
-                              alt="Puzzle preview"
-                              fill
-                              style={{
-                                objectFit: 'cover',
-                              }}
-                              unoptimized
-                            />
-                          </div>
-                          <div
-                            className="mt-3 px-6 py-3 rounded-lg shrink-0"
-                            style={{
-                              background: 'var(--color-primary)',
-                              color: 'var(--color-black)',
-                              borderRadius: 'var(--radius-round-medium)',
-                              boxShadow: 'var(--shadow-soft)',
-                              fontSize: '16px',
-                              fontWeight: 500,
-                              letterSpacing: '0.01em',
-                              cursor: 'pointer',
-                              transition: 'transform var(--motion-fast) var(--motion-easing)',
-                            }}
-                            onMouseEnter={(e) => {
-                              e.currentTarget.style.transform = 'scale(1.02)';
-                            }}
-                            onMouseLeave={(e) => {
-                              e.currentTarget.style.transform = 'scale(1)';
-                            }}
-                          >
-                            Click to start puzzle
-                          </div>
-                        </div>
-                      </div>
-                ) : (
-                  <div 
+                <div 
                     className="flex h-full w-full flex-col"
                     style={{
                       maxHeight: '100%',
                       maxWidth: '100%',
                       background: 'transparent',
                       display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      padding: '8px',
+                      alignItems: 'stretch',
+                      justifyContent: 'space-between',
+                      padding: 'var(--spacing-xs)',
+                      gap: 'var(--spacing-xs)',
                     }}
                   >
-                    <div className="flex flex-col items-center gap-0.5 sm:gap-1 mb-0.5 sm:mb-1 shrink-0">
+                    <div className="flex flex-col items-center gap-0.5 shrink-0">
                       {isHardLevel && (
                         <div 
-                          className="card-elevated px-2 py-1 sm:px-3 sm:py-1.5 rounded-lg flex items-center gap-2 shrink-0"
+                          className="card-elevated px-2 py-1 rounded-lg flex items-center gap-2 shrink-0"
                           style={{
                             background: 'var(--color-black)',
                             borderRadius: 'var(--radius-round-medium)',
@@ -708,10 +608,11 @@ function GamePageContent() {
                     </div>
 
                     <div 
-                      className="flex flex-1 items-center justify-center overflow-hidden min-h-0"
+                      className="flex flex-1 items-center justify-center overflow-hidden min-h-0 w-full"
                       style={{
                         width: '100%',
-                        height: '100%',
+                        flex: '1 1 0%',
+                        minHeight: 0,
                         display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'center',
@@ -728,7 +629,7 @@ function GamePageContent() {
                       />
                     </div>
 
-                    <div className="flex items-center justify-center shrink-0 mt-1 sm:mt-2">
+                    <div className="flex items-center justify-center shrink-0">
                       <Controls
                         onNewGame={handleNewGame}
                         onShuffle={handleShuffle}
@@ -738,7 +639,6 @@ function GamePageContent() {
                       />
                     </div>
                   </div>
-                )}
 
                 <WinModal
                   isOpen={isComplete}

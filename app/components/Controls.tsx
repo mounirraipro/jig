@@ -1,5 +1,7 @@
 'use client';
 
+import { RotateCcw, Shuffle, Lightbulb } from 'lucide-react';
+
 interface ControlsProps {
   onNewGame: () => void;
   onShuffle: () => void;
@@ -9,36 +11,69 @@ interface ControlsProps {
 }
 
 export default function Controls({ onNewGame, onShuffle, onHint, showHints = true, compact = false }: ControlsProps) {
-  const buttonStyle = compact 
-    ? { fontSize: '10px', letterSpacing: '0.1em', padding: 'var(--spacing-xxs) var(--spacing-xs)' }
-    : { fontSize: '12px', letterSpacing: '0.15em', padding: 'var(--spacing-xs) var(--spacing-sm)' };
+  const iconSize = compact ? 16 : 20;
+  const buttonSize = compact ? 32 : 40;
+  const borderRadius = compact ? 'var(--radius-round-medium)' : 'var(--radius-round-large)';
 
   return (
     <div 
-      className="flex flex-col items-center justify-center sm:flex-row"
+      className="flex flex-row items-center justify-center"
       style={{ gap: compact ? 'var(--spacing-xxs)' : 'var(--spacing-xs)' }}
     >
       <button
         onClick={onNewGame}
         className="btn-secondary"
-        style={compact ? { minHeight: '32px', fontSize: '10px', padding: 'var(--spacing-xxs) var(--spacing-xs)' } : {}}
+        style={{ 
+          width: `${buttonSize}px`,
+          height: `${buttonSize}px`,
+          minWidth: `${buttonSize}px`,
+          minHeight: `${buttonSize}px`,
+          padding: 0,
+          borderRadius: borderRadius,
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+        }}
+        aria-label="New Puzzle"
       >
-        <span style={buttonStyle}>New Puzzle</span>
+        <RotateCcw size={iconSize} />
       </button>
       <button
         onClick={onShuffle}
         className="btn-ghost"
-        style={compact ? { minHeight: '32px', fontSize: '10px', padding: 'var(--spacing-xxs) var(--spacing-xs)' } : {}}
+        style={{ 
+          width: `${buttonSize}px`,
+          height: `${buttonSize}px`,
+          minWidth: `${buttonSize}px`,
+          minHeight: `${buttonSize}px`,
+          padding: 0,
+          borderRadius: borderRadius,
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+        }}
+        aria-label="Shuffle"
       >
-        <span style={buttonStyle}>Shuffle</span>
+        <Shuffle size={iconSize} />
       </button>
       {showHints && (
         <button
           onClick={onHint}
           className="btn-ghost"
-          style={compact ? { minHeight: '32px', fontSize: '10px', padding: 'var(--spacing-xxs) var(--spacing-xs)' } : {}}
+          style={{ 
+            width: `${buttonSize}px`,
+            height: `${buttonSize}px`,
+            minWidth: `${buttonSize}px`,
+            minHeight: `${buttonSize}px`,
+            padding: 0,
+            borderRadius: borderRadius,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}
+          aria-label="Hint"
         >
-          <span style={buttonStyle}>Hint</span>
+          <Lightbulb size={iconSize} />
         </button>
       )}
     </div>
