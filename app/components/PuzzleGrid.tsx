@@ -12,6 +12,10 @@ interface PuzzleGridProps {
   onTileClick: (index: number) => void;
   onTileDragSwap: (fromIndex: number, toIndex: number) => void;
   compact?: boolean;
+  tileWidth: number;
+  tileHeight: number;
+  imageUrl: string;
+  gridSize: number;
 }
 
 export default function PuzzleGrid({
@@ -21,15 +25,14 @@ export default function PuzzleGrid({
   onTileClick,
   onTileDragSwap,
   compact = false,
+  tileWidth,
+  tileHeight,
+  imageUrl,
+  gridSize,
 }: PuzzleGridProps) {
+  const rows = gridSize;
+  const cols = gridSize;
   const totalTiles = tiles.length;
-  const computedSize = Math.sqrt(totalTiles);
-  const gridSize =
-    totalTiles === 0
-      ? 1
-      : Number.isInteger(computedSize)
-      ? computedSize
-      : Math.max(1, Math.round(computedSize));
 
   const createEmptyMerge = (): TileMergeDirections => ({
     top: false,
@@ -124,37 +127,39 @@ export default function PuzzleGrid({
     <div
       style={{
         display: 'grid',
-        gridTemplateColumns: `repeat(${gridSize}, 1fr)`,
-        gridTemplateRows: `repeat(${gridSize}, 1fr)`,
-        borderRadius: compact ? 'var(--radius-round-medium)' : 'var(--radius-round-large)',
-        background: 'var(--color-surface)',
-        boxShadow: 'var(--shadow-soft)',
-        border: 'var(--border-thin)',
+        gridTemplateColumns: `repeat(${cols}, 1fr)`,
+        gridTemplateRows: `repeat(${rows}, 1fr)`,
         padding: 0,
-        aspectRatio: '3 / 4',
-        width: '100%',
-        height: '100%',
+        width: 'auto',
+        height: 'auto',
         maxWidth: '100%',
         maxHeight: '100%',
+        aspectRatio: `${tileWidth * cols} / ${tileHeight * rows}`,
         gap: 0,
-        rowGap: 0,
-        columnGap: 0,
-        margin: '0 auto',
+        margin: 'auto',
         boxSizing: 'border-box',
+        alignContent: 'center',
+        overflow: 'hidden',
+        boxShadow: '0 20px 50px -12px rgba(0, 0, 0, 0.5)',
+        borderRadius: '4px',
       }}
     >
       {tiles.map((tile, index) => (
         <Tile
           key={tile.id}
-          imageData={tile.imageData}
+          index={index}
+          imageUrl={imageUrl}
+          correctPos={tile.correctPos}
+          gridSize={gridSize}
           isSelected={selectedTile === index}
           isCorrect={tile.currentPos === tile.correctPos}
-          isHinted={hintedTileId === tile.id}
-          index={index}
+          isHinted={tile.id === hintedTileId}
           onClick={() => onTileClick(index)}
           onDragSwap={onTileDragSwap}
           mergeDirections={mergeDirectionsByIndex[index] ?? createEmptyMerge()}
           groupBorderEdges={groupBorderEdges.get(index) ?? { top: false, right: false, bottom: false, left: false }}
+          width={tileWidth}
+          height={tileHeight}
         />
       ))}
     </div>

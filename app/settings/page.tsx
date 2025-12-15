@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { getSettings, updateSetting, type GameSettings } from '../utils/settings';
 
@@ -8,9 +8,7 @@ export default function SettingsPage() {
   const router = useRouter();
   const [settings, setSettings] = useState<GameSettings>(getSettings());
 
-  useEffect(() => {
-    setSettings(getSettings());
-  }, []);
+
 
   const handleToggle = (key: keyof GameSettings) => {
     const newValue = !settings[key] as boolean;
@@ -19,88 +17,8 @@ export default function SettingsPage() {
     updateSetting(key, newValue);
   };
 
-  const SettingItem = ({ 
-    icon, 
-    title, 
-    description, 
-    value, 
-    onToggle 
-  }: { 
-    icon: React.ReactNode; 
-    title: string; 
-    description: string; 
-    value: boolean; 
-    onToggle: () => void;
-  }) => {
-    return (
-      <div 
-        className="card flex items-center justify-between p-6 transition-all"
-        style={{
-          padding: 'var(--spacing-lg)',
-        }}
-        onMouseEnter={(e) => {
-          e.currentTarget.style.boxShadow = 'var(--shadow-elevated)';
-        }}
-        onMouseLeave={(e) => {
-          e.currentTarget.style.boxShadow = 'var(--shadow-soft)';
-        }}
-      >
-        <div className="flex items-center gap-4">
-          <div 
-            className="flex h-12 w-12 items-center justify-center rounded-xl"
-            style={{
-              background: value ? 'var(--color-primary)' : 'var(--color-light-gray)',
-              borderRadius: 'var(--radius-round-medium)',
-            }}
-          >
-            {icon}
-          </div>
-          <div>
-            <label 
-              className="block font-bold"
-              style={{
-                color: 'var(--color-text-primary)',
-                fontSize: '18px',
-                lineHeight: '24px',
-                fontWeight: 700,
-              }}
-            >
-              {title}
-            </label>
-            <p 
-              className="mt-1"
-              style={{
-                color: 'var(--color-text-secondary)',
-                fontSize: '13px',
-                lineHeight: '18px',
-              }}
-            >
-              {description}
-            </p>
-          </div>
-        </div>
-        <button
-          onClick={onToggle}
-          className="relative h-10 w-16 rounded-full transition-all"
-          style={{
-            background: value ? 'var(--color-primary)' : 'var(--color-light-gray)',
-            borderRadius: 'var(--radius-pill)',
-          }}
-        >
-          <span
-            className="absolute top-1 h-8 w-8 rounded-full bg-white transition-transform"
-            style={{
-              transform: value ? 'translateX(26px)' : 'translateX(2px)',
-              boxShadow: 'var(--shadow-soft)',
-            }}
-          />
-        </button>
-      </div>
-    );
-  };
-
   return (
-    <div 
+    <div
       className="min-h-screen px-4 py-6 sm:px-6 sm:py-8"
       style={{ background: 'var(--color-surface)' }}
     >
@@ -116,9 +34,9 @@ export default function SettingsPage() {
               <path d="M19 12H5M12 19l-7-7 7-7" />
             </svg>
           </button>
-          <h1 
+          <h1
             className="text-2xl font-bold uppercase tracking-tight"
-            style={{ 
+            style={{
               color: 'var(--color-text-primary)',
               fontSize: '28px',
               lineHeight: '34px',
@@ -133,11 +51,11 @@ export default function SettingsPage() {
         <div className="space-y-4">
           <SettingItem
             icon={
-              <svg 
-                width="24" 
-                height="24" 
-                viewBox="0 0 24 24" 
-                fill="none" 
+              <svg
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
                 stroke={settings.playWithTime ? 'var(--color-black)' : 'var(--color-text-secondary)'}
                 strokeWidth="2"
                 style={{ color: settings.playWithTime ? 'var(--color-black)' : 'var(--color-text-secondary)' }}
@@ -154,11 +72,11 @@ export default function SettingsPage() {
 
           <SettingItem
             icon={
-              <svg 
-                width="24" 
-                height="24" 
-                viewBox="0 0 24 24" 
-                fill="none" 
+              <svg
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
                 stroke={settings.showHints ? 'var(--color-black)' : 'var(--color-text-secondary)'}
                 strokeWidth="2"
                 style={{ color: settings.showHints ? 'var(--color-black)' : 'var(--color-text-secondary)' }}
@@ -177,11 +95,11 @@ export default function SettingsPage() {
           <SettingItem
             icon={
               settings.muted ? (
-                <svg 
-                  width="24" 
-                  height="24" 
-                  viewBox="0 0 24 24" 
-                  fill="none" 
+                <svg
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                  fill="none"
                   stroke="var(--color-black)"
                   strokeWidth="2"
                   style={{ color: 'var(--color-black)' }}
@@ -191,11 +109,11 @@ export default function SettingsPage() {
                   <line x1="17" y1="9" x2="23" y2="15" />
                 </svg>
               ) : (
-                <svg 
-                  width="24" 
-                  height="24" 
-                  viewBox="0 0 24 24" 
-                  fill="none" 
+                <svg
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                  fill="none"
                   stroke="var(--color-text-secondary)"
                   strokeWidth="2"
                   style={{ color: 'var(--color-text-secondary)' }}
@@ -212,6 +130,86 @@ export default function SettingsPage() {
           />
         </div>
       </div>
+    </div>
+  );
+}
+
+function SettingItem({
+  icon,
+  title,
+  description,
+  value,
+  onToggle
+}: {
+  icon: React.ReactNode;
+  title: string;
+  description: string;
+  value: boolean;
+  onToggle: () => void;
+}) {
+  return (
+    <div
+      className="card flex items-center justify-between p-6 transition-all"
+      style={{
+        padding: 'var(--spacing-lg)',
+      }}
+      onMouseEnter={(e) => {
+        e.currentTarget.style.boxShadow = 'var(--shadow-elevated)';
+      }}
+      onMouseLeave={(e) => {
+        e.currentTarget.style.boxShadow = 'var(--shadow-soft)';
+      }}
+    >
+      <div className="flex items-center gap-4">
+        <div
+          className="flex h-12 w-12 items-center justify-center rounded-xl"
+          style={{
+            background: value ? 'var(--color-primary)' : 'var(--color-light-gray)',
+            borderRadius: 'var(--radius-round-medium)',
+          }}
+        >
+          {icon}
+        </div>
+        <div>
+          <label
+            className="block font-bold"
+            style={{
+              color: 'var(--color-text-primary)',
+              fontSize: '18px',
+              lineHeight: '24px',
+              fontWeight: 700,
+            }}
+          >
+            {title}
+          </label>
+          <p
+            className="mt-1"
+            style={{
+              color: 'var(--color-text-secondary)',
+              fontSize: '13px',
+              lineHeight: '18px',
+            }}
+          >
+            {description}
+          </p>
+        </div>
+      </div>
+      <button
+        onClick={onToggle}
+        className="relative h-10 w-16 rounded-full transition-all"
+        style={{
+          background: value ? 'var(--color-primary)' : 'var(--color-light-gray)',
+          borderRadius: 'var(--radius-pill)',
+        }}
+      >
+        <span
+          className="absolute top-1 h-8 w-8 rounded-full bg-white transition-transform"
+          style={{
+            transform: value ? 'translateX(26px)' : 'translateX(2px)',
+            boxShadow: 'var(--shadow-soft)',
+          }}
+        />
+      </button>
     </div>
   );
 }

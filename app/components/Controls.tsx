@@ -11,69 +11,84 @@ interface ControlsProps {
 }
 
 export default function Controls({ onNewGame, onShuffle, onHint, showHints = true, compact = false }: ControlsProps) {
-  const iconSize = compact ? 16 : 20;
-  const buttonSize = compact ? 32 : 40;
-  const borderRadius = compact ? 'var(--radius-round-medium)' : 'var(--radius-round-large)';
+  if (compact) {
+    return (
+      <div className="flex items-center gap-1">
+        <button
+          onClick={onNewGame}
+          className="btn-ghost rounded-full p-2 h-10 w-10 flex items-center justify-center hover:bg-white/50"
+          title="New Game"
+        >
+          <RotateCcw size={20} />
+        </button>
+        <button
+          onClick={onShuffle}
+          className="btn-ghost rounded-full p-2 h-10 w-10 flex items-center justify-center hover:bg-white/50"
+          title="Shuffle Tiles"
+        >
+          <Shuffle size={20} />
+        </button>
+        {showHints && (
+          <button
+            onClick={onHint}
+            className="btn-ghost rounded-full p-2 h-10 w-10 flex items-center justify-center hover:bg-white/50"
+            title="Show Hint"
+          >
+            <Lightbulb size={20} />
+          </button>
+        )}
+      </div>
+    );
+  }
 
   return (
-    <div 
-      className="flex flex-row items-center justify-center"
-      style={{ gap: compact ? 'var(--spacing-xxs)' : 'var(--spacing-xs)' }}
-    >
+    <div className="grid grid-cols-3 gap-3 w-full">
       <button
         onClick={onNewGame}
-        className="btn-secondary"
-        style={{ 
-          width: `${buttonSize}px`,
-          height: `${buttonSize}px`,
-          minWidth: `${buttonSize}px`,
-          minHeight: `${buttonSize}px`,
-          padding: 0,
-          borderRadius: borderRadius,
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
+        className="btn-secondary flex flex-col gap-2 items-center justify-center py-4 h-auto transition-all hover:-translate-y-1"
+        style={{
+          borderRadius: 'var(--radius-round-medium)',
+          fontSize: '11px',
+          fontWeight: 600,
+          letterSpacing: '0.05em',
+          textTransform: 'uppercase'
         }}
-        aria-label="New Puzzle"
       >
-        <RotateCcw size={iconSize} />
+        <RotateCcw size={22} />
+        <span>Restart</span>
       </button>
       <button
         onClick={onShuffle}
-        className="btn-ghost"
-        style={{ 
-          width: `${buttonSize}px`,
-          height: `${buttonSize}px`,
-          minWidth: `${buttonSize}px`,
-          minHeight: `${buttonSize}px`,
-          padding: 0,
-          borderRadius: borderRadius,
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
+        className="btn-ghost flex flex-col gap-2 items-center justify-center py-4 h-auto transition-all hover:-translate-y-1"
+        style={{
+          borderRadius: 'var(--radius-round-medium)',
+          fontSize: '11px',
+          fontWeight: 600,
+          letterSpacing: '0.05em',
+          textTransform: 'uppercase',
+          background: 'var(--color-light-gray)',
+          border: 'none',
         }}
-        aria-label="Shuffle"
       >
-        <Shuffle size={iconSize} />
+        <Shuffle size={22} />
+        <span>Shuffle</span>
       </button>
       {showHints && (
         <button
           onClick={onHint}
-          className="btn-ghost"
-          style={{ 
-            width: `${buttonSize}px`,
-            height: `${buttonSize}px`,
-            minWidth: `${buttonSize}px`,
-            minHeight: `${buttonSize}px`,
-            padding: 0,
-            borderRadius: borderRadius,
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
+          className="btn-ghost flex flex-col gap-2 items-center justify-center py-4 h-auto transition-all hover:-translate-y-1"
+          style={{
+            borderRadius: 'var(--radius-round-medium)',
+            fontSize: '11px',
+            fontWeight: 600,
+            letterSpacing: '0.05em',
+            textTransform: 'uppercase',
+            background: 'var(--color-light-gray)',
+            border: 'none',
           }}
-          aria-label="Hint"
         >
-          <Lightbulb size={iconSize} />
+          <Lightbulb size={22} />
+          <span>Hint</span>
         </button>
       )}
     </div>

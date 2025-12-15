@@ -12,93 +12,31 @@ export default function Stats({ moves, time, progress, compact = false }: StatsP
 
   if (compact) {
     return (
-      <div 
-        className="flex flex-wrap items-center justify-center gap-1.5 rounded-lg px-1.5 py-1"
-        style={{
-          background: 'var(--color-surface)',
-          borderRadius: 'var(--radius-round-medium)',
-          boxShadow: 'var(--shadow-soft)',
-          padding: 'var(--spacing-xxs) var(--spacing-xs)',
-        }}
-      >
-        <div className="flex min-w-[50px] flex-col items-center">
-          <span 
-            className="text-xs font-medium uppercase tracking-wide"
-            style={{
-              color: 'var(--color-text-secondary)',
-              fontSize: '9px',
-              lineHeight: '12px',
-              letterSpacing: '0.1em',
-            }}
-          >
-            Moves
-          </span>
-          <span 
-            className="font-bold"
-            style={{
-              color: 'var(--color-text-primary)',
-              fontSize: '16px',
-              lineHeight: '20px',
-              fontWeight: 700,
-            }}
-          >
-            {moves}
-          </span>
+      <div className="glass-panel rounded-full px-4 py-2 flex items-center gap-6 shadow-lg">
+        <div className="flex flex-col items-center">
+          <span className="text-[10px] font-bold uppercase tracking-wider text-slate-500">Moves</span>
+          <span className="text-sm font-bold text-slate-800 tabular-nums">{moves}</span>
         </div>
-        
-        <div className="flex min-w-[50px] flex-col items-center">
-          <span 
-            className="text-xs font-medium uppercase tracking-wide"
-            style={{
-              color: 'var(--color-text-secondary)',
-              fontSize: '9px',
-              lineHeight: '12px',
-              letterSpacing: '0.1em',
-            }}
-          >
-            Time
-          </span>
-          <span 
-            className="font-bold"
-            style={{
-              color: 'var(--color-text-primary)',
-              fontSize: '16px',
-              lineHeight: '20px',
-              fontWeight: 700,
-            }}
-          >
-            {time}
-          </span>
+
+        <div className="h-6 w-px bg-slate-200"></div>
+
+        <div className="flex flex-col items-center">
+          <span className="text-[10px] font-bold uppercase tracking-wider text-slate-500">Time</span>
+          <span className="text-sm font-bold text-slate-800 tabular-nums">{time}</span>
         </div>
-        
-        <div className="flex min-w-[80px] flex-1 flex-col">
-          <div 
-            className="flex items-center justify-between text-xs font-medium uppercase tracking-wide"
-            style={{
-              color: 'var(--color-text-secondary)',
-              fontSize: '9px',
-              lineHeight: '12px',
-              letterSpacing: '0.1em',
-            }}
-          >
-            <span>Progress</span>
-            <span>{formattedProgress}%</span>
-          </div>
-          <div 
-            className="relative mt-0.5 h-0.5 overflow-hidden rounded-full"
-            style={{
-              background: 'var(--color-light-gray)',
-              borderRadius: 'var(--radius-pill)',
-            }}
-          >
-            <div
-              className="absolute inset-y-0 left-0 rounded-full transition-all duration-500 ease-out"
-              style={{ 
-                width: `${progress}%`,
-                background: 'var(--color-primary)',
-                borderRadius: 'var(--radius-pill)',
-              }}
-            />
+
+        <div className="h-6 w-px bg-slate-200"></div>
+
+        <div className="flex flex-col items-center min-w-[60px]">
+          <span className="text-[10px] font-bold uppercase tracking-wider text-slate-500">Progress</span>
+          <div className="flex items-center gap-2 w-full">
+            <div className="h-1.5 flex-1 bg-slate-200 rounded-full overflow-hidden">
+              <div
+                className="h-full bg-yellow-500 transition-all duration-500 ease-out rounded-full"
+                style={{ width: `${progress}%` }}
+              />
+            </div>
+            <span className="text-[10px] font-bold text-slate-700">{formattedProgress}%</span>
           </div>
         </div>
       </div>
@@ -106,92 +44,28 @@ export default function Stats({ moves, time, progress, compact = false }: StatsP
   }
 
   return (
-    <div 
-      className="flex flex-wrap items-center justify-center gap-4 rounded-2xl px-4 py-3"
-      style={{
-        background: 'var(--color-surface)',
-        borderRadius: 'var(--radius-round-large)',
-        boxShadow: 'var(--shadow-soft)',
-        padding: 'var(--spacing-md)',
-      }}
-    >
-      <div className="flex min-w-[88px] flex-col items-center">
-        <span 
-          className="text-xs font-medium uppercase tracking-wide"
-          style={{
-            color: 'var(--color-text-secondary)',
-            fontSize: '13px',
-            lineHeight: '18px',
-            letterSpacing: '0.14em',
-          }}
-        >
-          Moves
-        </span>
-        <span 
-          className="text-xl font-bold"
-          style={{
-            color: 'var(--color-text-primary)',
-            fontSize: '28px',
-            lineHeight: '34px',
-            fontWeight: 700,
-          }}
-        >
-          {moves}
-        </span>
+    <div className="flex flex-col gap-4 w-full">
+      <div className="grid grid-cols-2 gap-3">
+        <div className="flex flex-col items-center p-4 rounded-2xl bg-slate-50 border border-slate-100">
+          <span className="text-xs font-bold uppercase tracking-wider text-slate-400 mb-1">Moves</span>
+          <span className="text-2xl font-bold text-slate-800 tabular-nums">{moves}</span>
+        </div>
+
+        <div className="flex flex-col items-center p-4 rounded-2xl bg-slate-50 border border-slate-100">
+          <span className="text-xs font-bold uppercase tracking-wider text-slate-400 mb-1">Time</span>
+          <span className="text-2xl font-bold text-slate-800 tabular-nums">{time}</span>
+        </div>
       </div>
-      
-      <div className="flex min-w-[88px] flex-col items-center">
-        <span 
-          className="text-xs font-medium uppercase tracking-wide"
-          style={{
-            color: 'var(--color-text-secondary)',
-            fontSize: '13px',
-            lineHeight: '18px',
-            letterSpacing: '0.14em',
-          }}
-        >
-          Time
-        </span>
-        <span 
-          className="text-xl font-bold"
-          style={{
-            color: 'var(--color-text-primary)',
-            fontSize: '28px',
-            lineHeight: '34px',
-            fontWeight: 700,
-          }}
-        >
-          {time}
-        </span>
-      </div>
-      
-      <div className="flex min-w-[180px] flex-1 flex-col">
-        <div 
-          className="flex items-center justify-between text-xs font-medium uppercase tracking-wide"
-          style={{
-            color: 'var(--color-text-secondary)',
-            fontSize: '13px',
-            lineHeight: '18px',
-            letterSpacing: '0.14em',
-          }}
-        >
+
+      <div className="flex flex-col gap-2 p-4 rounded-2xl bg-slate-50 border border-slate-100">
+        <div className="flex items-center justify-between text-xs font-bold uppercase tracking-wider text-slate-500">
           <span>Progress</span>
           <span>{formattedProgress}%</span>
         </div>
-        <div 
-          className="relative mt-1.5 h-1 overflow-hidden rounded-full"
-          style={{
-            background: 'var(--color-light-gray)',
-            borderRadius: 'var(--radius-pill)',
-          }}
-        >
+        <div className="relative h-2.5 bg-slate-200 rounded-full overflow-hidden">
           <div
-            className="absolute inset-y-0 left-0 rounded-full transition-all duration-500 ease-out"
-            style={{ 
-              width: `${progress}%`,
-              background: 'var(--color-primary)',
-              borderRadius: 'var(--radius-pill)',
-            }}
+            className="absolute inset-y-0 left-0 bg-yellow-500 rounded-full transition-all duration-500 ease-out"
+            style={{ width: `${progress}%` }}
           />
         </div>
       </div>

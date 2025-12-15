@@ -6,42 +6,45 @@ import {
   useState,
   type PointerEvent as ReactPointerEvent,
 } from 'react';
-import Image from 'next/image';
 
-import type { TileMergeDirections } from '../types/game';
+
+import { Tile as TileType, TileMergeDirections, GroupBorderEdges } from '../types/game';
 
 const BASE_BORDER_WIDTH = 0;
 
-interface GroupBorderEdges {
-  top: boolean;
-  right: boolean;
-  bottom: boolean;
-  left: boolean;
-}
+
 
 interface TileProps {
-  imageData: string;
-  isSelected: boolean;
-  isCorrect: boolean;
-  isHinted: boolean;
+  tile: TileType;
   index: number;
+  isSelected: boolean;
+  isHinted: boolean;
   onClick: () => void;
   onDragSwap: (fromIndex: number, toIndex: number) => void;
-  mergeDirections: TileMergeDirections;
-  groupBorderEdges: GroupBorderEdges;
+  width: number;
+  height: number;
+  imageUrl: string;
+  gridSize: number;
+  mergeDirections?: TileMergeDirections;
+  groupBorderEdges?: GroupBorderEdges;
 }
 
 export default function Tile({
-  imageData,
+  tile,
+  imageUrl,
   isSelected,
   isHinted,
-  isCorrect,
   index,
+  gridSize,
   onClick,
   onDragSwap,
   mergeDirections,
   groupBorderEdges,
+  width,
+  height,
 }: TileProps) {
+  const { currentPos, correctPos } = tile;
+  const isCorrect = currentPos === correctPos;
   const [isHovered, setIsHovered] = useState(false);
   const [isDragging, setIsDragging] = useState(false);
   const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
@@ -61,37 +64,45 @@ export default function Tile({
       // For correct tiles, use group border style
       const borderWidth = '2px';
       const borderColor = 'rgba(255, 191, 0, 0.4)';
-      
+
+      const {
+        top: groupTop = false,
+        right: groupRight = false,
+        bottom: groupBottom = false,
+        left: groupLeft = false,
+      } = groupBorderEdges || {};
+
       return {
-        borderTopWidth: groupBorderEdges.top ? borderWidth : 0,
-        borderRightWidth: groupBorderEdges.right ? borderWidth : 0,
-        borderBottomWidth: groupBorderEdges.bottom ? borderWidth : 0,
-        borderLeftWidth: groupBorderEdges.left ? borderWidth : 0,
-        borderTopStyle: groupBorderEdges.top ? ('solid' as const) : ('none' as const),
-        borderRightStyle: groupBorderEdges.right ? ('solid' as const) : ('none' as const),
-        borderBottomStyle: groupBorderEdges.bottom ? ('solid' as const) : ('none' as const),
-        borderLeftStyle: groupBorderEdges.left ? ('solid' as const) : ('none' as const),
-        borderTopColor: groupBorderEdges.top ? borderColor : 'transparent',
-        borderRightColor: groupBorderEdges.right ? borderColor : 'transparent',
-        borderBottomColor: groupBorderEdges.bottom ? borderColor : 'transparent',
-        borderLeftColor: groupBorderEdges.left ? borderColor : 'transparent',
+        borderTopWidth: groupTop ? borderWidth : 0,
+        borderRightWidth: groupRight ? borderWidth : 0,
+        borderBottomWidth: groupBottom ? borderWidth : 0,
+        borderLeftWidth: groupLeft ? borderWidth : 0,
+        borderTopStyle: groupTop ? ('solid' as const) : ('none' as const),
+        borderRightStyle: groupRight ? ('solid' as const) : ('none' as const),
+        borderBottomStyle: groupBottom ? ('solid' as const) : ('none' as const),
+        borderLeftStyle: groupLeft ? ('solid' as const) : ('none' as const),
+        borderTopColor: groupTop ? borderColor : 'transparent',
+        borderRightColor: groupRight ? borderColor : 'transparent',
+        borderBottomColor: groupBottom ? borderColor : 'transparent',
+        borderLeftColor: groupLeft ? borderColor : 'transparent',
       };
     }
-    
+
     // For incorrect tiles, remove borders on merged edges
+    const {
+      top: mergeTop = false,
+      right: mergeRight = false,
+      bottom: mergeBottom = false,
+      left: mergeLeft = false,
+    } = mergeDirections || {};
+
     return {
-      borderTopWidth: mergeDirections.top ? 0 : BASE_BORDER_WIDTH,
-      borderRightWidth: mergeDirections.right ? 0 : BASE_BORDER_WIDTH,
-      borderBottomWidth: mergeDirections.bottom ? 0 : BASE_BORDER_WIDTH,
-      borderLeftWidth: mergeDirections.left ? 0 : BASE_BORDER_WIDTH,
-      borderTopStyle: 'solid' as const,
-      borderRightStyle: 'solid' as const,
-      borderBottomStyle: 'solid' as const,
-      borderLeftStyle: 'solid' as const,
-      borderTopColor: 'rgba(255, 255, 255, 0.92)',
-      borderRightColor: 'rgba(255, 255, 255, 0.92)',
-      borderBottomColor: 'rgba(255, 255, 255, 0.92)',
-      borderLeftColor: 'rgba(255, 255, 255, 0.92)',
+      borderTopWidth: mergeTop ? 0 : '1px',
+      borderRightWidth: mergeRight ? 0 : '1px',
+      borderBottomWidth: mergeBottom ? 0 : '1px',
+      borderLeftWidth: mergeLeft ? 0 : '1px',
+      borderStyle: 'solid',
+      borderColor: 'rgba(255, 255, 255, 0.1)',
     };
   }, [mergeDirections, isCorrect, groupBorderEdges]);
 
@@ -104,7 +115,7 @@ export default function Tile({
       event.preventDefault();
       return;
     }
-    
+
     if (event.button !== 0) return;
     event.preventDefault();
 
@@ -186,6 +197,15 @@ export default function Tile({
 
   const isLocked = isCorrect;
 
+  // Calculate background position based on correct position
+  const bgPosition = useMemo(() => {
+    const row = Math.floor(correctPos / gridSize);
+    const col = correctPos % gridSize;
+    const percentX = (col / (gridSize - 1)) * 100;
+    const percentY = (row / (gridSize - 1)) * 100;
+    return `${percentX}% ${percentY}%`;
+  }, [correctPos, gridSize]);
+
   return (
     <div
       ref={tileRef}
@@ -196,18 +216,18 @@ export default function Tile({
       onPointerCancel={handlePointerCancel}
       onMouseEnter={() => !isLocked && setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
-      className={`
-        group relative overflow-hidden touch-none
-        transition-shadow duration-200 ease-out
-        ${isLocked ? 'cursor-default' : 'cursor-grab active:cursor-grabbing'}
-      `}
+      className={`tile-content relative cursor-pointer overflow-hidden w-full h-full ${isCorrect ? 'z-0' : isSelected ? 'z-20 shadow-2xl' : 'z-10 hover:brightness-110'
+        }`}
       style={{
         ...borderStyles,
         ...borderRadiusStyles,
         background: 'var(--color-surface)',
-        transform: isLocked ? 'none' : `translate3d(${dragOffset.x}px, ${dragOffset.y}px, 0) scale(${baseScale})`,
         transition: isDragging ? 'transform 70ms ease-out' : 'transform 200ms var(--motion-easing)',
-        boxShadow: isDragging ? 'var(--shadow-elevated)' : (isLocked ? 'none' : 'var(--shadow-soft)'),
+        boxShadow: isDragging
+          ? 'var(--shadow-elevated)'
+          : (isLocked
+            ? '0 2px 4px rgba(16,16,16,0.04)'
+            : '0 4px 8px rgba(16,16,16,0.1), 0 2px 4px rgba(16,16,16,0.06)'),
         outline: isSelected || isHinted ? '2px solid var(--color-primary)' : 'none',
         outlineOffset: isSelected || isHinted ? '-2px' : '0',
         pointerEvents: isLocked ? 'none' : 'auto',
@@ -215,24 +235,26 @@ export default function Tile({
         padding: 0,
         width: '100%',
         height: '100%',
-        aspectRatio: '3 / 4',
+        // aspectRatio: `${width} / ${height}`, // Handled by parent container dimensions
         boxSizing: 'border-box',
+        transform: isLocked
+          ? `scale(${baseScale})`
+          : `translate3d(${dragOffset.x}px, ${dragOffset.y}px, 0) scale(${baseScale})`,
       }}
     >
-      <Image
-        src={imageData}
-        alt="Puzzle piece"
-        fill
+      <div
         style={{
-          objectFit: 'cover',
-          objectPosition: 'center',
+          width: '100%',
+          height: '100%',
+          backgroundImage: `url(${imageUrl})`,
+          backgroundSize: `${gridSize * 100}% ${gridSize * 100}%`,
+          backgroundPosition: bgPosition,
+          backgroundRepeat: 'no-repeat',
         }}
-        draggable={false}
-        unoptimized
       />
 
       {isHinted && !isCorrect && (
-        <div 
+        <div
           className="pointer-events-none absolute inset-0 animate-[pulse_1.6s_ease-in-out_infinite] border-2"
           style={{
             borderColor: 'var(--color-primary)',

@@ -2,7 +2,6 @@ export interface Tile {
   id: number;
   currentPos: number;
   correctPos: number;
-  imageData: string;
   puzzleIndex?: number; // For hard levels with multiple puzzles
 }
 
@@ -28,6 +27,13 @@ export interface TileMergeDirections {
   topRight: boolean;
   bottomLeft: boolean;
   bottomRight: boolean;
+}
+
+export interface GroupBorderEdges {
+  top: boolean;
+  right: boolean;
+  bottom: boolean;
+  left: boolean;
 }
 
 export interface PuzzleSet {

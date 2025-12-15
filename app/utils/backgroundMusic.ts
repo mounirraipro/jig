@@ -1,13 +1,18 @@
 // Background music handler with fade in/out transitions
+
+type MusicEventCallback = () => void;
+
 class BackgroundMusicManager {
   private tracks: HTMLAudioElement[] = [];
   private currentTrackIndex: number = 0;
   private isEnabled: boolean = true;
   private isPlaying: boolean = false;
-  private fadeDuration: number = 2000; // 2 seconds fade
+  private fadeDuration: number = 1000; // 1 second fade
   private fadeInterval: number | null = null;
   private volume: number = 0.3;
-  private readonly MAX_TRACKS = 10; // Support up to mbg1.mp3 through mbg10.mp3
+  private readonly MAX_TRACKS = 10;
+  private listeners: Set<MusicEventCallback> = new Set();
+  private loadedTrackCount: number = 0;
 
   constructor() {
     if (typeof window !== 'undefined') {
@@ -24,12 +29,14 @@ class BackgroundMusicManager {
       audio.preload = 'auto';
       audio.loop = false;
       
-      // Add event listener for track end
       audio.addEventListener('ended', () => {
         this.handleTrackEnd();
       });
 
-      // Test if file exists - add error handler
+      audio.addEventListener('canplaythrough', () => {
+        this.loadedTrackCount++;
+      });
+
       audio.addEventListener('error', () => {
         const index = this.tracks.indexOf(audio);
         if (index > -1) {
@@ -40,17 +47,26 @@ class BackgroundMusicManager {
         }
       });
 
-      // Try to load to verify existence (load() is synchronous, errors handled by event listener)
       try {
         audio.load();
       } catch {
-        // Ignore load errors, will be handled by error event listener
+        // Ignore load errors
       }
       
       tracksToLoad.push(audio);
     }
     
     this.tracks = tracksToLoad;
+  }
+
+  // Subscribe to state changes
+  subscribe(callback: MusicEventCallback): () => void {
+    this.listeners.add(callback);
+    return () => this.listeners.delete(callback);
+  }
+
+  private notifyListeners() {
+    this.listeners.forEach(cb => cb());
   }
 
   private getCurrentTrack(): HTMLAudioElement | null {
@@ -112,35 +128,55 @@ class BackgroundMusicManager {
 
   private handleTrackEnd() {
     if (!this.isEnabled || !this.isPlaying) return;
+    this.nextTrack();
+  }
 
+  async nextTrack() {
     const currentTrack = this.getCurrentTrack();
-    if (!currentTrack) return;
+    if (!currentTrack || this.tracks.length === 0) return;
 
-    // If only one track, loop it
-    if (this.tracks.length === 1) {
+    if (this.isPlaying) {
+      await this.fadeOut(currentTrack, () => {});
+    } else {
+      currentTrack.pause();
       currentTrack.currentTime = 0;
-      this.fadeIn(currentTrack).then(() => {
-        currentTrack.play().catch(() => {
-          // Ignore play errors
-        });
-      });
-      return;
     }
 
-    // Fade out current track, then fade in next
-    this.fadeOut(currentTrack, () => {
-      this.currentTrackIndex = (this.currentTrackIndex + 1) % this.tracks.length;
+    this.currentTrackIndex = (this.currentTrackIndex + 1) % this.tracks.length;
+    this.notifyListeners();
+
+    if (this.isPlaying) {
       const nextTrack = this.getCurrentTrack();
-      
       if (nextTrack) {
         nextTrack.currentTime = 0;
-        this.fadeIn(nextTrack).then(() => {
-          nextTrack.play().catch(() => {
-            // Ignore play errors
-          });
-        });
+        await this.fadeIn(nextTrack);
+        await nextTrack.play().catch(() => {});
       }
-    });
+    }
+  }
+
+  async previousTrack() {
+    const currentTrack = this.getCurrentTrack();
+    if (!currentTrack || this.tracks.length === 0) return;
+
+    if (this.isPlaying) {
+      await this.fadeOut(currentTrack, () => {});
+    } else {
+      currentTrack.pause();
+      currentTrack.currentTime = 0;
+    }
+
+    this.currentTrackIndex = (this.currentTrackIndex - 1 + this.tracks.length) % this.tracks.length;
+    this.notifyListeners();
+
+    if (this.isPlaying) {
+      const prevTrack = this.getCurrentTrack();
+      if (prevTrack) {
+        prevTrack.currentTime = 0;
+        await this.fadeIn(prevTrack);
+        await prevTrack.play().catch(() => {});
+      }
+    }
   }
 
   async play() {
@@ -150,43 +186,57 @@ class BackgroundMusicManager {
     if (!currentTrack) return;
 
     this.isPlaying = true;
+    this.notifyListeners();
 
     try {
-      currentTrack.currentTime = 0;
-      await this.fadeIn(currentTrack);
+      if (currentTrack.currentTime === 0 || currentTrack.paused) {
+        await this.fadeIn(currentTrack);
+      }
       await currentTrack.play();
-    } catch (error) {
-      // Ignore play errors (user interaction required)
+    } catch {
       this.isPlaying = false;
+      this.notifyListeners();
     }
   }
 
   async stop() {
     this.isPlaying = false;
+    this.notifyListeners();
     
     const currentTrack = this.getCurrentTrack();
     if (currentTrack) {
-      await this.fadeOut(currentTrack, () => {
-        // Track already paused in fadeOut
-      });
+      await this.fadeOut(currentTrack, () => {});
     }
   }
 
   pause() {
     this.isPlaying = false;
-    this.tracks.forEach(track => {
-      track.pause();
-    });
+    this.notifyListeners();
+    
+    const currentTrack = this.getCurrentTrack();
+    if (currentTrack) {
+      currentTrack.pause();
+    }
+  }
+
+  async toggle() {
+    if (this.isPlaying) {
+      this.pause();
+    } else {
+      await this.play();
+    }
   }
 
   resume() {
     if (!this.isEnabled) return;
     
     const currentTrack = this.getCurrentTrack();
-    if (currentTrack && !currentTrack.paused) {
+    if (currentTrack) {
       this.isPlaying = true;
+      this.notifyListeners();
       currentTrack.play().catch(() => {
-        // Ignore play errors
+        this.isPlaying = false;
+        this.notifyListeners();
       });
     }
   }
@@ -202,11 +252,44 @@ class BackgroundMusicManager {
 
   setVolume(volume: number) {
     this.volume = Math.max(0, Math.min(1, volume));
-    this.tracks.forEach(track => {
-      if (!track.paused) {
-        track.volume = this.volume;
-      }
-    });
+    const currentTrack = this.getCurrentTrack();
+    if (currentTrack && !currentTrack.paused) {
+      currentTrack.volume = this.volume;
+    }
+    this.notifyListeners();
+  }
+
+  // Getters for UI state
+  getIsPlaying(): boolean {
+    return this.isPlaying;
+  }
+
+  getCurrentTrackIndex(): number {
+    return this.currentTrackIndex;
+  }
+
+  getTotalTracks(): number {
+    return this.tracks.length;
+  }
+
+  getVolume(): number {
+    return this.volume;
+  }
+
+  getProgress(): number {
+    const track = this.getCurrentTrack();
+    if (!track || !track.duration) return 0;
+    return track.currentTime / track.duration;
+  }
+
+  getCurrentTime(): number {
+    const track = this.getCurrentTrack();
+    return track?.currentTime || 0;
+  }
+
+  getDuration(): number {
+    const track = this.getCurrentTrack();
+    return track?.duration || 0;
   }
 }
 
@@ -219,4 +302,3 @@ export function getBackgroundMusicManager(): BackgroundMusicManager {
   }
   return backgroundMusicInstance;
 }
-
