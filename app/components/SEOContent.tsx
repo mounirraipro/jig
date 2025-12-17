@@ -1,6 +1,7 @@
 'use client';
 
 import React from 'react';
+import Link from 'next/link';
 
 // Icon components for features
 const IconInstant = () => (
@@ -346,10 +347,13 @@ export default function SEOContent() {
         <div className="max-w-5xl mx-auto px-6">
           <div className="flex flex-col md:flex-row items-center justify-between gap-4 text-slate-500 text-sm">
             <p>&copy; {new Date().getFullYear()} JigSolitaire. All rights reserved.</p>
-            <div className="flex gap-6">
-              <span className="hover:text-slate-700 cursor-pointer transition-colors">Privacy Policy</span>
-              <span className="hover:text-slate-700 cursor-pointer transition-colors">Terms of Service</span>
-              <span className="hover:text-slate-700 cursor-pointer transition-colors">Contact</span>
+            <div className="flex flex-wrap justify-center gap-4 md:gap-6">
+              <Link href="/about" className="hover:text-slate-700 transition-colors">About</Link>
+              <Link href="/privacy" className="hover:text-slate-700 transition-colors">Privacy</Link>
+              <Link href="/terms" className="hover:text-slate-700 transition-colors">Terms</Link>
+              <Link href="/cookies" className="hover:text-slate-700 transition-colors">Cookies</Link>
+              <Link href="/parents" className="hover:text-slate-700 transition-colors">Parents</Link>
+              <Link href="/contact" className="hover:text-slate-700 transition-colors">Contact</Link>
             </div>
           </div>
         </div>

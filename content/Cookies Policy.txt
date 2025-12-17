@@ -1,0 +1,133 @@
+<h2>Cookies Policy for jigsolitaire</h2>
+
+<p>Last Updated: January 2026</p>
+
+<p>Welcome to <strong>jigsolitaire.online</strong>. This Cookies Policy explains in a clear and simple way how <strong>jigsolitaire</strong> uses cookies and similar technologies to make the website work properly and provide a pleasant experience for all users. Because <strong>jigsolitaire</strong> is designed for everyone, including children, we aim to explain everything in an easy-to-understand manner.</p>
+
+<p>By continuing to use <strong>jigsolitaire.online</strong>, you agree to the use of cookies as described in this Cookies Policy. You can always control or change cookie settings through your browser.</p>
+
+<h2>Understanding Cookies on jigsolitaire</h2>
+
+<p>Cookies are small text files that websites like <strong>jigsolitaire</strong> place on your device when you visit them. These files help the website remember certain information and function correctly.</p>
+
+<p>Cookies used by <strong>jigsolitaire</strong> may store simple data such as a unique identifier, browser type, or basic preferences. They do not contain harmful programs and cannot access personal files on your device.</p>
+
+<p>The main purpose of cookies on <strong>jigsolitaire</strong> is to ensure smooth gameplay, fast loading times, and a stable browsing experience.</p>
+
+<h2>Types of Cookies Used by jigsolitaire</h2>
+
+<p><strong>jigsolitaire</strong> uses different types of cookies depending on their purpose. Each type plays an important role in keeping the website functional and enjoyable.</p>
+
+<p><strong>Session Cookies:</strong> These cookies are temporary and are deleted when you close your browser. On <strong>jigsolitaire</strong>, session cookies help the website remember your actions during a single visit.</p>
+
+<p><strong>Persistent Cookies:</strong> These cookies remain on your device for a set period. <strong>jigsolitaire</strong> uses them to remember basic preferences between visits, such as language or layout settings.</p>
+
+<h2>Strictly Necessary Cookies for jigsolitaire</h2>
+
+<p>Strictly necessary cookies are essential for <strong>jigsolitaire</strong> to work correctly. Without these cookies, the website may not function as intended.</p>
+
+<p>These cookies help with basic tasks such as maintaining game sessions, ensuring security, and managing server load. They also support accessibility features so <strong>jigsolitaire</strong> can be used comfortably on different devices.</p>
+
+<p>Because these cookies are required for basic operation, they cannot be disabled directly through our website. However, you can control them through browser settings, which may affect gameplay.</p>
+
+<h2>Performance and Analytics Cookies for jigsolitaire</h2>
+
+<p>Performance and analytics cookies help <strong>jigsolitaire</strong> understand how visitors use the website. This information is collected in an anonymous and grouped way.</p>
+
+<p>These cookies show us which pages are visited most, how long players stay on <strong>jigsolitaire</strong>, and whether any errors occur during gameplay.</p>
+
+<p>Analytics data helps us improve loading speed, fix bugs, and make <strong>jigsolitaire</strong> more enjoyable for everyone.</p>
+
+<p>We may use trusted tools such as Google Analytics to collect this information. These tools follow strict privacy standards.</p>
+
+<h2>Functionality Cookies on jigsolitaire</h2>
+
+<p>Functionality cookies allow <strong>jigsolitaire</strong> to remember choices you make on the website. These cookies help create a smoother and more personalized experience.</p>
+
+<p>For example, <strong>jigsolitaire</strong> may remember your preferred language, screen layout, or basic display settings.</p>
+
+<p>These cookies do not track personal identity and are only used to improve comfort and usability.</p>
+
+<h2>Advertising Cookies and jigsolitaire</h2>
+
+<p>At this time, <strong>jigsolitaire</strong> does not use advertising or targeting cookies. We focus on providing a simple and distraction-free gaming experience.</p>
+
+<p>If advertising cookies are ever introduced on <strong>jigsolitaire</strong>, this Cookies Policy will be updated clearly, and users will be informed in advance.</p>
+
+<p>Our priority remains a clean, safe, and enjoyable environment for all players.</p>
+
+<h2>Third-Party Cookies Used with jigsolitaire</h2>
+
+<p><strong>jigsolitaire</strong> may work with trusted third-party services to help run the website efficiently. These services may place their own cookies.</p>
+
+<p>Examples include analytics providers, hosting services, or content delivery networks that help <strong>jigsolitaire</strong> load quickly and reliably.</p>
+
+<p>Third-party cookies are managed by external companies and follow their own privacy and cookies policies. We recommend reviewing those policies to learn more.</p>
+
+<p><strong>jigsolitaire</strong> does not control how third-party cookies are used.</p>
+
+<h2>How to Manage Cookies for jigsolitaire</h2>
+
+<p>You are always in control of cookies on <strong>jigsolitaire</strong>. Most web browsers allow you to manage cookie settings easily.</p>
+
+<p>You can choose to block cookies, allow only certain cookies, delete existing cookies, or receive alerts before cookies are stored.</p>
+
+<p>Popular browsers such as Chrome, Firefox, Safari, Edge, and Opera provide clear instructions in their help sections.</p>
+
+<p>Please remember that disabling cookies may affect how <strong>jigsolitaire</strong> works.</p>
+
+<h2>Effect of Disabling Cookies on jigsolitaire</h2>
+
+<p>If you choose to disable cookies, <strong>jigsolitaire</strong> will still be accessible, but some features may not work as smoothly.</p>
+
+<p>You may experience slower loading times, lost preferences, or repeated settings requests.</p>
+
+<p>We do our best to ensure <strong>jigsolitaire</strong> remains playable even with limited cookies, but the best experience comes from allowing them.</p>
+
+<h2>Do Not Track Signals and jigsolitaire</h2>
+
+<p>Some browsers send a “Do Not Track” signal to websites. Currently, there is no universal rule on how websites should respond to this signal.</p>
+
+<p><strong>jigsolitaire</strong> does not change cookie behavior based on Do Not Track signals but respects browser-level cookie controls.</p>
+
+<p>You can manage tracking preferences directly through your browser.</p>
+
+<h2>Cookie Retention Periods for jigsolitaire</h2>
+
+<p>Cookies used by <strong>jigsolitaire</strong> are stored only for the time needed to fulfill their purpose.</p>
+
+<p>Session cookies are removed when you close your browser. Analytics cookies may last up to two years. Preference cookies usually last up to one year.</p>
+
+<p>Once cookies are no longer necessary, they are automatically deleted or overwritten.</p>
+
+<h2>Children and Cookies on jigsolitaire</h2>
+
+<p><strong>jigsolitaire</strong> is designed to be safe for children. Cookies used on the site do not collect personal information from children.</p>
+
+<p>No registration or personal details are required to play <strong>jigsolitaire</strong>, which helps protect young users.</p>
+
+<p>Parents can manage cookie settings through the browser to control how cookies work.</p>
+
+<h2>Updates to the jigsolitaire Cookies Policy</h2>
+
+<p>This Cookies Policy for <strong>jigsolitaire</strong> may be updated from time to time due to legal, technical, or operational changes.</p>
+
+<p>When updates occur, the “Last Updated” date at the top of this page will be changed.</p>
+
+<p>We encourage users to review this policy regularly to stay informed.</p>
+
+<h2>More Information About jigsolitaire Cookies</h2>
+
+<p>If you would like to learn more about how data is handled, please review our Privacy Policy.</p>
+
+<p>If you have questions about cookies or how <strong>jigsolitaire</strong> uses them, you can contact us through the contact page on our website.</p>
+
+<p>We are always happy to help and explain things clearly.</p>
+
+<h2>Final Words About Cookies and jigsolitaire</h2>
+
+<p>Thank you for taking the time to read the Cookies Policy for <strong>jigsolitaire</strong>. We believe that transparency and simplicity are important.</p>
+
+<p>Our goal is to provide a fun, safe, and smooth gaming experience while respecting your choices and privacy.</p>
+
+<p>Enjoy playing <strong>jigsolitaire</strong> and browse with confidence.</p>

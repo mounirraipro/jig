@@ -72,7 +72,7 @@ export default function LevelsPage() {
 
   const handleLevelSelect = (level: number) => {
     if (!isLevelUnlocked(level)) return;
-    router.push(`/game?level=${level}`);
+    router.push(`/level/${level}`);
   };
 
   const renderStars = (stars: number) => {
