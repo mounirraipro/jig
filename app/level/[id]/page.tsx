@@ -51,9 +51,9 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
       type: 'website',
       images: [
         {
-          url: `${BASE_URL}/og-image.svg`,
-          width: 1200,
-          height: 630,
+          url: `${BASE_URL}/Jigsolitaire.online_Thmbnail.png`,
+          width: 1024,
+          height: 1024,
           alt: `JigSolitaire Level ${level}`,
         },
       ],
@@ -62,6 +62,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
       card: 'summary_large_image',
       title: seo.title,
       description: seo.description,
+      images: [`${BASE_URL}/Jigsolitaire.online_Thmbnail.png`],
     },
     alternates: {
       canonical: `${BASE_URL}/level/${level}`,
@@ -90,3 +91,4 @@ export default async function LevelPage({ params }: PageProps) {
     </>
   );
 }
+

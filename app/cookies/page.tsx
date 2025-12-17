@@ -8,6 +8,11 @@ export const metadata: Metadata = {
   alternates: {
     canonical: 'https://jigsolitaire.online/cookies',
   },
+  openGraph: {
+    title: 'Cookies Policy | JigSolitaire',
+    description: 'Learn about how JigSolitaire uses cookies.',
+    images: ['/Jigsolitaire.online_Thmbnail.png'],
+  },
 };
 
 export default function CookiesPage() {
@@ -125,3 +130,4 @@ export default function CookiesPage() {
     </ContentPageLayout>
   );
 }
+

@@ -330,3 +330,4 @@ export default function LevelSEOContent({ level, seoData }: LevelSEOContentProps
     </section>
   );
 }
+

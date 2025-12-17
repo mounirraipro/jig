@@ -8,6 +8,11 @@ export const metadata: Metadata = {
   alternates: {
     canonical: 'https://jigsolitaire.online/contact',
   },
+  openGraph: {
+    title: 'Contact Us | JigSolitaire',
+    description: 'Contact the JigSolitaire team for support, feedback, or inquiries.',
+    images: ['/Jigsolitaire.online_Thmbnail.png'],
+  },
 };
 
 export default function ContactPage() {
@@ -119,3 +124,4 @@ export default function ContactPage() {
     </ContentPageLayout>
   );
 }
+

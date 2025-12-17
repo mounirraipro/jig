@@ -8,6 +8,11 @@ export const metadata: Metadata = {
   alternates: {
     canonical: 'https://jigsolitaire.online/privacy',
   },
+  openGraph: {
+    title: 'Privacy Policy | JigSolitaire',
+    description: 'Read the Privacy Policy for JigSolitaire.',
+    images: ['/Jigsolitaire.online_Thmbnail.png'],
+  },
 };
 
 export default function PrivacyPage() {
@@ -125,3 +130,4 @@ export default function PrivacyPage() {
     </ContentPageLayout>
   );
 }
+

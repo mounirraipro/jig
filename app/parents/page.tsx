@@ -8,6 +8,11 @@ export const metadata: Metadata = {
   alternates: {
     canonical: 'https://jigsolitaire.online/parents',
   },
+  openGraph: {
+    title: 'Information for Parents & Guardians | JigSolitaire',
+    description: 'Information for parents and guardians about JigSolitaire.',
+    images: ['/Jigsolitaire.online_Thmbnail.png'],
+  },
 };
 
 export default function ParentsPage() {
@@ -137,3 +142,4 @@ export default function ParentsPage() {
     </ContentPageLayout>
   );
 }
+

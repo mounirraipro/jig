@@ -8,6 +8,11 @@ export const metadata: Metadata = {
   alternates: {
     canonical: 'https://jigsolitaire.online/about',
   },
+  openGraph: {
+    title: 'About Us | JigSolitaire',
+    description: 'Learn about JigSolitaire, the free online jigsaw puzzle game.',
+    images: ['/Jigsolitaire.online_Thmbnail.png'],
+  },
 };
 
 export default function AboutPage() {
@@ -101,3 +106,4 @@ export default function AboutPage() {
     </ContentPageLayout>
   );
 }
+

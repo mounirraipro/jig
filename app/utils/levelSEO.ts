@@ -193,3 +193,4 @@ export function generateLevelStructuredData(level: number, baseUrl: string): obj
     },
   };
 }
+

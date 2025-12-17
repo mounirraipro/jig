@@ -8,6 +8,11 @@ export const metadata: Metadata = {
   alternates: {
     canonical: 'https://jigsolitaire.online/terms',
   },
+  openGraph: {
+    title: 'Terms of Service | JigSolitaire',
+    description: 'Read the Terms of Service for JigSolitaire.',
+    images: ['/Jigsolitaire.online_Thmbnail.png'],
+  },
 };
 
 export default function TermsPage() {
@@ -165,3 +170,4 @@ export default function TermsPage() {
     </ContentPageLayout>
   );
 }
+

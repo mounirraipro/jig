@@ -629,3 +629,4 @@ export default function LevelGameClient({ level, seoData }: LevelGameClientProps
     </div>
   );
 }
+

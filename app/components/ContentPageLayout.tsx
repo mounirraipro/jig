@@ -128,3 +128,4 @@ export default function ContentPageLayout({ title, children }: ContentPageLayout
     </div>
   );
 }
+
