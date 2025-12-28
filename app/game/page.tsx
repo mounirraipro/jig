@@ -4,7 +4,7 @@ import { useState, useEffect, useCallback, useRef, useMemo, Suspense } from 'rea
 import { useSearchParams, useRouter } from 'next/navigation';
 import { Tile, GameImage, PuzzleSet } from '../types/game';
 import { shuffleTiles as shuffleArray } from '../utils/imageSplitter';
-import { saveLevelProgress } from '../utils/storage';
+import { saveLevelProgress, startPlaySession, savePlaySession, endPlaySession } from '../utils/storage';
 import { getSettings } from '../utils/settings';
 import { getSoundManager } from '../utils/sounds';
 import { getBackgroundMusicManager } from '../utils/backgroundMusic';
@@ -71,28 +71,32 @@ function GamePageContent() {
     backgroundMusicRef.current.setEnabled(!settings.muted);
   }, [settings.muted]);
 
-  // Start background music when game starts
-  useEffect(() => {
-    if (tiles.length > 0 && !isComplete && !settings.muted) {
-      const timer = setTimeout(() => {
-        backgroundMusicRef.current.play();
-      }, 500);
-      return () => clearTimeout(timer);
-    }
-  }, [tiles.length, isComplete, settings.muted]);
+  // Music is now controlled by MiniPlayer - we only sync mute setting
+  // Music should NOT stop on level change or component unmount
 
-  // Stop background music when game ends or component unmounts
+  // Track play time for statistics
   useEffect(() => {
-    const bgMusic = backgroundMusicRef.current;
+    startPlaySession();
     
-    if (isComplete) {
-      bgMusic.stop();
-    }
+    // Save time every 30 seconds
+    const saveInterval = setInterval(() => {
+      savePlaySession();
+    }, 30000);
+    
+    // Save on page visibility change
+    const handleVisibilityChange = () => {
+      if (document.hidden) {
+        savePlaySession();
+      }
+    };
+    document.addEventListener('visibilitychange', handleVisibilityChange);
     
     return () => {
-      bgMusic.stop();
+      clearInterval(saveInterval);
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
+      endPlaySession();
     };
-  }, [isComplete]);
+  }, []);
 
   // Detect tile matches and play click sound
   useEffect(() => {

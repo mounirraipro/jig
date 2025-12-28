@@ -4,7 +4,8 @@ import { useState, useEffect, useCallback, useRef, useMemo, Suspense } from 'rea
 import { useSearchParams, useRouter } from 'next/navigation';
 import { Tile, GameImage, PuzzleSet } from './types/game';
 import { shuffleTiles as shuffleArray } from './utils/imageSplitter';
-import { saveLevelProgress, getLastPlayedLevel, setLastPlayedLevel } from './utils/storage';
+import { saveLevelProgress, getLastPlayedLevel, setLastPlayedLevel, startPlaySession, savePlaySession, endPlaySession, checkDailyVisit, StreakInfo } from './utils/storage';
+import StreakPopup from './components/StreakPopup';
 import { getSettings } from './utils/settings';
 import { getSoundManager } from './utils/sounds';
 import { getBackgroundMusicManager } from './utils/backgroundMusic';
@@ -55,8 +56,10 @@ function GamePageContent() {
   const [currentLevel, setCurrentLevel] = useState<number | null>(null);
   const [isHardLevel, setIsHardLevel] = useState(false);
   const [currentPuzzleIndex, setCurrentPuzzleIndex] = useState(0); // For hard levels
-  const [isLoading, setIsLoading] = useState(true);
+  const [isInitialLoading, setIsInitialLoading] = useState(true); // Only for first load
+  const [isTransitioning, setIsTransitioning] = useState(false); // For level switches
   const [availableImages, setAvailableImages] = useState<GameImage[]>([]);
+  const imageCache = useRef<Map<string, { width: number; height: number }>>(new Map());
   const [loadError, setLoadError] = useState<string | null>(null);
   const [hintedTileId, setHintedTileId] = useState<number | null>(null);
   const [settings, setSettings] = useState(getSettings());
@@ -68,6 +71,23 @@ function GamePageContent() {
   const soundManagerRef = useRef(getSoundManager());
   const backgroundMusicRef = useRef(getBackgroundMusicManager());
   const previousCorrectCountRef = useRef(0);
+  const [streakInfo, setStreakInfo] = useState<StreakInfo | null>(null);
+  const [showStreakPopup, setShowStreakPopup] = useState(false);
+
+  // Check daily visit for streak popup (SEO-safe: delayed and skips bots)
+  useEffect(() => {
+    // Skip for bots/crawlers to not affect SEO
+    const isBot = /bot|crawler|spider|googlebot|bingbot|slurp|duckduckbot|baiduspider|yandexbot|facebookexternalhit|twitterbot|linkedinbot/i.test(navigator.userAgent);
+    if (isBot) return;
+    
+    const info = checkDailyVisit();
+    if (info) {
+      setStreakInfo(info);
+      // Delay popup to after LCP is measured (2.5s is the LCP threshold)
+      // This ensures the popup doesn't affect Core Web Vitals
+      setTimeout(() => setShowStreakPopup(true), 1500);
+    }
+  }, []);
 
   // Sound effect - sync with settings
   useEffect(() => {
@@ -75,29 +95,32 @@ function GamePageContent() {
     backgroundMusicRef.current.setEnabled(!settings.muted);
   }, [settings.muted]);
 
-  // Start background music when game starts
+  // Music is now controlled by MiniPlayer - we only sync mute setting
+  // Music should NOT stop on level change or component unmount
+
+  // Track play time for statistics
   useEffect(() => {
-    if (tiles.length > 0 && !isComplete && !settings.muted) {
-      // Delay to allow user interaction
-      const timer = setTimeout(() => {
-        backgroundMusicRef.current.play();
-      }, 500);
-      return () => clearTimeout(timer);
-    }
-  }, [tiles.length, isComplete, settings.muted]);
-
-  // Stop background music when game ends or component unmounts
-  useEffect(() => {
-    const bgMusic = backgroundMusicRef.current;
-
-    if (isComplete) {
-      bgMusic.stop();
-    }
-
-    return () => {
-      bgMusic.stop();
+    startPlaySession();
+    
+    // Save time every 30 seconds
+    const saveInterval = setInterval(() => {
+      savePlaySession();
+    }, 30000);
+    
+    // Save on page visibility change
+    const handleVisibilityChange = () => {
+      if (document.hidden) {
+        savePlaySession();
+      }
     };
-  }, [isComplete]);
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+    
+    return () => {
+      clearInterval(saveInterval);
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
+      endPlaySession();
+    };
+  }, []);
 
   // Detect tile matches and play click sound
   useEffect(() => {
@@ -159,31 +182,57 @@ function GamePageContent() {
     return shuffled.sort((a, b) => a.currentPos - b.currentPos);
   }, []);
 
-  const createNewGame = useCallback(async (image: GameImage, gridSize: number, puzzleIndex: number = 0) => {
-    setIsLoading(true);
-    try {
-      // Load image to get dimensions
+  // Get image dimensions (cached or load)
+  const getImageDimensions = useCallback(async (imageUrl: string): Promise<{ width: number; height: number }> => {
+    // Check cache first
+    const cached = imageCache.current.get(imageUrl);
+    if (cached) return cached;
+
+    // Load image to get dimensions
+    return new Promise((resolve) => {
       const img = new Image();
-      img.src = image.url;
-      await new Promise((resolve, reject) => {
-        img.onload = resolve;
-        img.onerror = reject;
-      });
+      img.onload = () => {
+        const dims = { width: img.width, height: img.height };
+        imageCache.current.set(imageUrl, dims);
+        resolve(dims);
+      };
+      img.onerror = () => {
+        // Default to square if image fails
+        resolve({ width: 1, height: 1 });
+      };
+      img.src = imageUrl;
+    });
+  }, []);
 
-      // Calculate tile dimensions based on image aspect ratio
-      const imageAspectRatio = img.width / img.height;
-
-      // We want the grid to fit within the container while maintaining aspect ratio
-      // Let's say base tile width is 100 (relative unit)
-      const baseTileWidth = 100;
-      const baseTileHeight = baseTileWidth / imageAspectRatio;
-
-      setTileDimensions({ width: baseTileWidth, height: baseTileHeight });
-      setGridSize(gridSize);
+  const createNewGame = useCallback(async (image: GameImage, gridSize: number, puzzleIndex: number = 0, skipDimensionWait: boolean = false) => {
+    try {
+      // Use default dimensions initially, update when image loads
+      let imageAspectRatio = 1;
+      
+      if (skipDimensionWait) {
+        // Start with square tiles, update async
+        const baseTileWidth = 100;
+        setTileDimensions({ width: baseTileWidth, height: baseTileWidth });
+        setGridSize(gridSize);
+        
+        // Load dimensions in background and update
+        getImageDimensions(image.url).then(dims => {
+          const ratio = dims.width / dims.height;
+          setTileDimensions({ width: 100, height: 100 / ratio });
+        });
+      } else {
+        // Wait for dimensions (only on initial load)
+        const dims = await getImageDimensions(image.url);
+        imageAspectRatio = dims.width / dims.height;
+        const baseTileWidth = 100;
+        const baseTileHeight = baseTileWidth / imageAspectRatio;
+        setTileDimensions({ width: baseTileWidth, height: baseTileHeight });
+        setGridSize(gridSize);
+      }
 
       const totalTiles = gridSize * gridSize;
       const newTiles: Tile[] = Array.from({ length: totalTiles }, (_, i) => ({
-        id: i + (puzzleIndex * 1000), // Unique IDs for multiple puzzles
+        id: i + (puzzleIndex * 1000),
         currentPos: i,
         correctPos: i,
         puzzleIndex,
@@ -211,15 +260,13 @@ function GamePageContent() {
     } catch (error) {
       console.error('Failed to initialize game:', error);
       return [];
-    } finally {
-      setIsLoading(false);
     }
-  }, [shuffleTiles]);
+  }, [shuffleTiles, getImageDimensions]);
 
-  const createHardLevel = useCallback(async (images: GameImage[]) => {
+  const createHardLevel = useCallback(async (images: GameImage[], skipDimensionWait: boolean = false) => {
     const sets: PuzzleSet[] = [];
     for (let i = 0; i < images.length; i++) {
-      const tiles = await createNewGame(images[i], 4, i);
+      const tiles = await createNewGame(images[i], 4, i, skipDimensionWait);
       sets.push({
         tiles,
         isComplete: false,
@@ -227,7 +274,7 @@ function GamePageContent() {
       });
     }
     setPuzzleSets(sets);
-    setTiles(sets[0].tiles); // Start with first puzzle
+    setTiles(sets[0].tiles);
     setCurrentImage(sets[0].image);
     setCurrentPuzzleIndex(0);
   }, [createNewGame]);
@@ -235,11 +282,10 @@ function GamePageContent() {
   const initializeGame = useCallback(async () => {
     if (availableImages.length === 0) {
       setLoadError('No puzzle images available.');
-      setIsLoading(false);
+      setIsInitialLoading(false);
       return;
     }
 
-    setIsLoading(true);
     setSettings(getSettings());
 
     // Check if a specific level was requested via URL
@@ -254,10 +300,8 @@ function GamePageContent() {
         level = levelNum;
 
         if (isHard) {
-          // Hard level: use 3 different images
           const imageIndices: number[] = [];
           const baseIndex = levelNum - 1;
-          // Use the level's image and 2 nearby images
           for (let i = 0; i < 3; i++) {
             const idx = (baseIndex + i) % availableImages.length;
             imageIndices.push(idx);
@@ -265,7 +309,6 @@ function GamePageContent() {
           const hardImages = imageIndices.map(idx => availableImages[idx]);
           await createHardLevel(hardImages);
         } else {
-          // Normal level: single image
           const selectedImage = availableImages[levelNum - 1];
           const tiles = await createNewGame(selectedImage, 3);
           setTiles(tiles);
@@ -280,7 +323,6 @@ function GamePageContent() {
         setPuzzleSets([]);
       }
     } else {
-      // No level specified in URL - use last played level
       const lastLevel = getLastPlayedLevel();
       const levelToLoad = Math.min(lastLevel, availableImages.length);
       level = levelToLoad;
@@ -292,7 +334,6 @@ function GamePageContent() {
       setPuzzleSets([]);
     }
 
-    // Save the current level as last played
     if (level) {
       setLastPlayedLevel(level);
     }
@@ -310,12 +351,10 @@ function GamePageContent() {
       hintTimeoutRef.current = null;
     }
     setLoadError(null);
-    setIsLoading(false);
+    setIsInitialLoading(false);
   }, [availableImages, createNewGame, createHardLevel, searchParams]);
 
   const loadManifest = useCallback(async () => {
-    setIsLoading(true);
-
     try {
       const response = await fetch('/jig-images/manifest.json');
 
@@ -338,11 +377,17 @@ function GamePageContent() {
 
       setAvailableImages(mappedImages);
       setLoadError(null);
+      
+      // Preload first few images in background
+      mappedImages.slice(0, 5).forEach(img => {
+        const preload = new Image();
+        preload.src = img.url;
+      });
     } catch (error) {
       console.error('Failed to load image manifest:', error);
       setAvailableImages([]);
       setLoadError('Failed to load puzzle collection. Please retry.');
-      setIsLoading(false);
+      setIsInitialLoading(false);
     }
   }, []);
 
@@ -528,23 +573,66 @@ function GamePageContent() {
     }
   };
 
-  const handleNewGame = () => {
-    // Already on home, just reload or reset
-    // router.push('/'); 
-    // Since we are on the same page, we can just reset state or reload
-    window.location.reload();
-  };
+  const handleNewGame = useCallback(() => {
+    // Quick reset to current level without reload
+    if (currentImage && tiles.length > 0) {
+      setIsComplete(false);
+      const shuffled = shuffleTiles(tiles.map(t => ({ ...t, currentPos: t.correctPos })));
+      setTiles(shuffled);
+      setMoves(0);
+      setTime('0:00');
+      setTimeInSeconds(0);
+      setSelectedTile(null);
+      setHintedTileId(null);
+      setEarnedStars(0);
+      previousCorrectCountRef.current = 0;
+      
+      if (timerRef.current) clearInterval(timerRef.current);
+      const startTime = Date.now();
+      timerRef.current = setInterval(() => {
+        const delta = Math.floor((Date.now() - startTime) / 1000);
+        const m = Math.floor(delta / 60).toString().padStart(2, '0');
+        const s = (delta % 60).toString().padStart(2, '0');
+        setTime(`${m}:${s}`);
+        setTimeInSeconds(delta);
+      }, 1000);
+    }
+  }, [currentImage, tiles, shuffleTiles]);
 
-  const handlePlayAgain = () => {
+  const handlePlayAgain = useCallback(() => {
     setIsComplete(false);
-    initializeGame();
-  };
+    // Quick reset without full reinitialization
+    if (currentImage && tiles.length > 0) {
+      const shuffled = shuffleTiles(tiles.map(t => ({ ...t, currentPos: t.correctPos })));
+      setTiles(shuffled);
+      setMoves(0);
+      setTime('0:00');
+      setTimeInSeconds(0);
+      setSelectedTile(null);
+      setHintedTileId(null);
+      setEarnedStars(0);
+      previousCorrectCountRef.current = 0;
+      
+      // Restart timer
+      if (timerRef.current) clearInterval(timerRef.current);
+      const startTime = Date.now();
+      timerRef.current = setInterval(() => {
+        const delta = Math.floor((Date.now() - startTime) / 1000);
+        const m = Math.floor(delta / 60).toString().padStart(2, '0');
+        const s = (delta % 60).toString().padStart(2, '0');
+        setTime(`${m}:${s}`);
+        setTimeInSeconds(delta);
+      }, 1000);
+    } else {
+      initializeGame();
+    }
+  }, [currentImage, tiles, shuffleTiles, initializeGame]);
 
-  // Fast level switching without page reload
+  // Fast level switching without page reload - instant transition
   const switchToLevel = useCallback(async (level: number) => {
     if (level < 1 || level > availableImages.length) return;
     
-    setIsLoading(true);
+    setIsTransitioning(true);
     setLastPlayedLevel(level);
     
     const isHard = level % 5 === 0;
@@ -554,6 +642,12 @@ function GamePageContent() {
     // Update URL without navigation
     window.history.replaceState({}, '', `/?level=${level}`);
     
+    // Preload next level's image
+    if (level < availableImages.length) {
+      const nextImg = new Image();
+      nextImg.src = availableImages[level].url;
+    }
+    
     if (isHard) {
       const imageIndices: number[] = [];
       const baseIndex = level - 1;
@@ -562,10 +656,12 @@ function GamePageContent() {
         imageIndices.push(idx);
       }
       const hardImages = imageIndices.map(idx => availableImages[idx]);
-      await createHardLevel(hardImages);
+      // Skip dimension wait for instant transitions
+      await createHardLevel(hardImages, true);
     } else {
       const selectedImage = availableImages[level - 1];
-      const newTiles = await createNewGame(selectedImage, 3);
+      // Skip dimension wait for instant transitions
+      const newTiles = await createNewGame(selectedImage, 3, 0, true);
       setTiles(newTiles);
       setCurrentImage(selectedImage);
       setPuzzleSets([]);
@@ -579,7 +675,11 @@ function GamePageContent() {
     setIsComplete(false);
     setHintedTileId(null);
     setEarnedStars(0);
-    setIsLoading(false);
+    
+    // Short delay for smooth visual transition
+    requestAnimationFrame(() => {
+      setIsTransitioning(false);
+    });
   }, [availableImages, createNewGame, createHardLevel]);
 
   const handleNextLevel = () => {
@@ -623,17 +723,17 @@ function GamePageContent() {
     );
   }
 
-  if (isLoading) {
+  // Only show full-page loading on initial load, not on level switches
+  if (isInitialLoading) {
     return (
       <div className="flex min-h-screen items-center justify-center" style={{ background: 'var(--color-surface)' }}>
-        <div
-          className="flex h-14 w-14 items-center justify-center rounded-full border-2"
-          style={{ borderColor: 'var(--color-light-gray)' }}
-        >
-          <div
-            className="h-8 w-8 animate-spin rounded-full border-2 border-t-transparent"
-            style={{ borderColor: 'var(--color-primary)' }}
-          />
+        <div className="flex flex-col items-center gap-4">
+          <div className="h-12 w-12 rounded-xl bg-gradient-to-br from-yellow-400 to-yellow-600 flex items-center justify-center shadow-lg animate-pulse">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="white">
+              <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" />
+            </svg>
+          </div>
+          <span className="text-sm font-medium text-slate-500">Loading JigSolitaire...</span>
         </div>
       </div>
     );
@@ -710,7 +810,7 @@ function GamePageContent() {
                 background: 'radial-gradient(circle at center, #F8FAFC 0%, #E2E8F0 100%)',
               }}
             >
-              <div className="w-full h-full flex items-center justify-center max-w-[95vw] sm:max-w-[500px]">
+              <div className={`w-full h-full flex items-center justify-center max-w-[95vw] sm:max-w-[500px] transition-opacity duration-150 ${isTransitioning ? 'opacity-50' : 'opacity-100'}`}>
                 <PuzzleBoard
                   tiles={tiles}
                   selectedTile={selectedTile}
@@ -735,6 +835,14 @@ function GamePageContent() {
                 onPlayAgain={handlePlayAgain}
                 onNextLevel={currentLevel !== null ? handleNextLevel : undefined}
               />
+              
+              {/* Streak Popup - shown on first daily visit */}
+              {showStreakPopup && streakInfo && (
+                <StreakPopup 
+                  streakInfo={streakInfo} 
+                  onClose={() => setShowStreakPopup(false)} 
+                />
+              )}
             </div>
 
             {/* Desktop Floating Dock Controls */}

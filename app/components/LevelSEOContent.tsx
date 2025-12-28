@@ -56,8 +56,13 @@ export default function LevelSEOContent({ level, seoData }: LevelSEOContentProps
             {seoData.h1}
           </h1>
           
-          <p className="text-lg text-slate-600 leading-relaxed mb-8">
+          <p className="text-lg text-slate-600 leading-relaxed mb-4">
             {seoData.intro}
+          </p>
+
+          <p className="text-base text-slate-500 leading-relaxed mb-8">
+            Play this <strong>JigSolitaire</strong> jigsaw solitaire puzzle for free — no download required. 
+            Works perfectly on desktop, mobile, and tablet browsers. Start solving now!
           </p>
           
           {/* Level Stats */}
@@ -88,7 +93,7 @@ export default function LevelSEOContent({ level, seoData }: LevelSEOContentProps
           <div className="grid md:grid-cols-2 gap-10">
             {/* Features */}
             <div>
-              <h2 className="text-2xl font-bold text-slate-900 mb-6">Level {level} Features</h2>
+              <h2 className="text-2xl font-bold text-slate-900 mb-6">JigSolitaire Level {level} Features</h2>
               <ul className="space-y-4">
                 {seoData.features.map((feature, i) => (
                   <li key={i} className="flex items-start gap-3">
@@ -105,7 +110,7 @@ export default function LevelSEOContent({ level, seoData }: LevelSEOContentProps
             
             {/* Tips */}
             <div>
-              <h2 className="text-2xl font-bold text-slate-900 mb-6">Pro Tips for Level {level}</h2>
+              <h2 className="text-2xl font-bold text-slate-900 mb-6">Pro Tips for JigSolitaire Level {level}</h2>
               <ul className="space-y-4">
                 {seoData.tips.map((tip, i) => (
                   <li key={i} className="flex items-start gap-3">
@@ -127,53 +132,53 @@ export default function LevelSEOContent({ level, seoData }: LevelSEOContentProps
       <div className="py-16 lg:py-20 bg-slate-50">
         <div className="max-w-4xl mx-auto px-6">
           <h2 className="text-2xl md:text-3xl font-bold text-slate-900 mb-8 text-center">
-            How to Complete Level {level}
+            How to Play JigSolitaire Level {level}
           </h2>
           
           <div className="prose prose-slate max-w-none">
             <p>
-              JigSolitaire Level {level} is part of our {seoData.collection} collection, featuring {seoData.difficulty.toLowerCase()} difficulty gameplay. 
-              This {seoData.puzzleType.toLowerCase()} puzzle challenges you to arrange all pieces in their correct positions by swapping tiles.
+              <strong>JigSolitaire Level {level}</strong> is part of our {seoData.collection} collection, featuring {seoData.difficulty.toLowerCase()} difficulty jigsaw solitaire gameplay. 
+              This JigSolitaire {seoData.puzzleType.toLowerCase()} puzzle challenges you to arrange all pieces in their correct positions by swapping tiles.
             </p>
             
             {isHardLevel ? (
               <>
-                <h3>Expert Level Challenge</h3>
+                <h3>JigSolitaire Expert Level Challenge</h3>
                 <p>
-                  As an expert-level challenge (Level {level}), this puzzle presents three connected 4x4 grids that must be solved sequentially. 
-                  Complete each puzzle before moving to the next. This requires greater concentration and spatial awareness than standard levels.
+                  As an expert-level JigSolitaire challenge (Level {level}), this puzzle presents three connected 4x4 grids that must be solved sequentially. 
+                  Complete each JigSolitaire puzzle before moving to the next. This requires greater concentration and spatial awareness than standard levels.
                 </p>
                 <p>
-                  The estimated completion time of {seoData.estimatedTime} reflects the increased complexity. 
-                  Expert players often aim to complete all three puzzles in under 5 minutes for maximum star rewards.
+                  The estimated JigSolitaire completion time of {seoData.estimatedTime} reflects the increased complexity. 
+                  Expert JigSolitaire players often aim to complete all three puzzles in under 5 minutes for maximum star rewards.
                 </p>
               </>
             ) : (
               <>
-                <h3>Standard Level Gameplay</h3>
+                <h3>JigSolitaire Standard Level Gameplay</h3>
                 <p>
-                  This standard {seoData.puzzleType.toLowerCase()} level uses a single image divided into 9 pieces. 
-                  Tap or drag pieces to swap their positions. The puzzle is complete when all pieces are in their correct spots.
+                  This standard JigSolitaire {seoData.puzzleType.toLowerCase()} level uses a single image divided into 9 pieces. 
+                  Tap or drag pieces to swap their positions. The JigSolitaire puzzle is complete when all pieces are in their correct spots.
                 </p>
                 <p>
-                  For Level {level}, you should aim to complete the puzzle within {seoData.estimatedTime} to earn stars. 
+                  For JigSolitaire Level {level}, aim to complete the puzzle within {seoData.estimatedTime} to earn stars. 
                   Complete in under 10 seconds for 3 stars, under 20 seconds for 2 stars, or simply finish to earn 1 star.
                 </p>
               </>
             )}
             
-            <h3>About the {seoData.collection} Collection</h3>
+            <h3>About the JigSolitaire {seoData.collection} Collection</h3>
             <p>
-              The {seoData.collection} collection in JigSolitaire features carefully curated images designed for {
-                seoData.collection === 'Discovery' ? 'players who are just starting their puzzle journey' :
-                seoData.collection === 'Nature' ? 'nature lovers and those seeking peaceful imagery' :
-                seoData.collection === 'Adventure' ? 'players who enjoy exciting and dynamic visuals' :
-                seoData.collection === 'Serenity' ? 'players looking for calming and meditative experiences' :
-                seoData.collection === 'Heritage' ? 'history enthusiasts and art appreciators' :
-                seoData.collection === 'Horizons' ? 'landscape lovers and travel enthusiasts' :
-                seoData.collection === 'Cosmos' ? 'space enthusiasts and astronomy lovers' :
-                'collectors seeking rare and special puzzles'
-              }. Each level in this collection offers a unique visual experience while maintaining consistent quality and challenge.
+              The {seoData.collection} collection in JigSolitaire features carefully curated jigsaw solitaire images designed for {
+                seoData.collection === 'Discovery' ? 'players who are just starting their JigSolitaire puzzle journey' :
+                seoData.collection === 'Nature' ? 'nature lovers and those seeking peaceful JigSolitaire imagery' :
+                seoData.collection === 'Adventure' ? 'players who enjoy exciting and dynamic JigSolitaire visuals' :
+                seoData.collection === 'Serenity' ? 'players looking for calming and meditative JigSolitaire experiences' :
+                seoData.collection === 'Heritage' ? 'history enthusiasts and art appreciators enjoying JigSolitaire' :
+                seoData.collection === 'Horizons' ? 'landscape lovers and travel enthusiasts playing JigSolitaire' :
+                seoData.collection === 'Cosmos' ? 'space enthusiasts and astronomy lovers solving JigSolitaire puzzles' :
+                'collectors seeking rare and special JigSolitaire puzzles'
+              }. Each JigSolitaire level in this collection offers a unique visual experience while maintaining consistent quality and challenge.
             </p>
           </div>
         </div>
@@ -183,7 +188,7 @@ export default function LevelSEOContent({ level, seoData }: LevelSEOContentProps
       <div className="py-16 lg:py-20">
         <div className="max-w-4xl mx-auto px-6">
           <h2 className="text-2xl font-bold text-slate-900 mb-8 text-center">
-            Explore More Levels
+            Explore More JigSolitaire Levels
           </h2>
           
           <div className="flex flex-wrap justify-center gap-3">
@@ -229,7 +234,7 @@ export default function LevelSEOContent({ level, seoData }: LevelSEOContentProps
           
           <div className="text-center mt-8">
             <Link href="/levels" className="inline-flex items-center gap-2 text-amber-600 hover:text-amber-700 font-semibold transition-colors">
-              View All 77 Levels
+              View All 77 JigSolitaire Levels
               <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
                 <path d="M9 5l7 7-7 7" />
               </svg>
@@ -242,7 +247,7 @@ export default function LevelSEOContent({ level, seoData }: LevelSEOContentProps
       <div className="py-16 lg:py-20 bg-slate-50">
         <div className="max-w-3xl mx-auto px-6">
           <h2 className="text-2xl md:text-3xl font-bold text-slate-900 mb-8 text-center">
-            Level {level} FAQ
+            JigSolitaire Level {level} FAQ
           </h2>
           
           <div className="space-y-4">
@@ -297,10 +302,10 @@ export default function LevelSEOContent({ level, seoData }: LevelSEOContentProps
         
         <div className="relative max-w-3xl mx-auto px-6 text-center">
           <h2 className="text-2xl md:text-3xl font-bold text-white mb-4">
-            Ready to Play Level {level}?
+            Ready to Play JigSolitaire Level {level}?
           </h2>
           <p className="text-lg text-amber-100 mb-6 max-w-xl mx-auto">
-            Scroll up to start playing this {seoData.difficulty.toLowerCase()} puzzle from the {seoData.collection} collection!
+            Scroll up to start playing this {seoData.difficulty.toLowerCase()} JigSolitaire puzzle from the {seoData.collection} collection — it&apos;s free!
           </p>
           <button 
             onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
@@ -309,7 +314,7 @@ export default function LevelSEOContent({ level, seoData }: LevelSEOContentProps
             <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
               <path d="M6.5 5.5v9l7-4.5-7-4.5z"/>
             </svg>
-            Play Level {level} Now
+            Play JigSolitaire Level {level} Now
           </button>
         </div>
       </div>

@@ -238,3 +238,96 @@ export function clearProgress(): void {
   localStorage.removeItem(PROGRESS_KEY);
   localStorage.removeItem(STATS_KEY);
 }
+
+// Track play time - call periodically during gameplay
+export function addPlayTime(seconds: number): void {
+  if (typeof window === 'undefined' || seconds <= 0) return;
+  
+  const stats = getPlayerStats();
+  stats.totalTimePlayed += seconds;
+  savePlayerStats(stats);
+}
+
+// Session time tracker - tracks time spent in game
+let sessionStartTime: number | null = null;
+let lastSaveTime: number | null = null;
+
+export function startPlaySession(): void {
+  sessionStartTime = Date.now();
+  lastSaveTime = Date.now();
+}
+
+export function savePlaySession(): void {
+  if (!lastSaveTime) return;
+  
+  const now = Date.now();
+  const elapsedSeconds = Math.floor((now - lastSaveTime) / 1000);
+  
+  if (elapsedSeconds > 0) {
+    addPlayTime(elapsedSeconds);
+    lastSaveTime = now;
+  }
+}
+
+export function endPlaySession(): void {
+  savePlaySession();
+  sessionStartTime = null;
+  lastSaveTime = null;
+}
+
+// Check if user is visiting for the first time today and update streak
+// Returns streak info if first visit, null if already visited today
+export interface StreakInfo {
+  currentStreak: number;
+  longestStreak: number;
+  isNewRecord: boolean;
+  streakContinued: boolean; // true if streak continued from yesterday
+  isFirstVisitEver: boolean;
+}
+
+const LAST_VISIT_KEY = 'jigsolitaire-last-visit';
+
+export function checkDailyVisit(): StreakInfo | null {
+  if (typeof window === 'undefined') return null;
+  
+  const today = getTodayDate();
+  const lastVisit = localStorage.getItem(LAST_VISIT_KEY);
+  
+  // Already visited today
+  if (lastVisit === today) {
+    return null;
+  }
+  
+  const stats = getPlayerStats();
+  const yesterday = new Date(Date.now() - 86400000).toISOString().split('T')[0];
+  const isFirstVisitEver = stats.lastPlayedDate === null;
+  const streakContinued = stats.lastPlayedDate === yesterday;
+  
+  // Update streak
+  let newStreak: number;
+  if (streakContinued) {
+    newStreak = stats.currentStreak + 1;
+  } else {
+    newStreak = 1;
+  }
+  
+  const isNewRecord = newStreak > stats.longestStreak;
+  const newLongestStreak = Math.max(newStreak, stats.longestStreak);
+  
+  // Save updated stats
+  stats.currentStreak = newStreak;
+  stats.longestStreak = newLongestStreak;
+  stats.lastPlayedDate = today;
+  savePlayerStats(stats);
+  
+  // Mark today as visited
+  localStorage.setItem(LAST_VISIT_KEY, today);
+  
+  return {
+    currentStreak: newStreak,
+    longestStreak: newLongestStreak,
+    isNewRecord,
+    streakContinued,
+    isFirstVisitEver,
+  };
+}

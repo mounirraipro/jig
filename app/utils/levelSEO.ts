@@ -88,47 +88,47 @@ export function getLevelSEOData(level: number): LevelSEOData {
   const theme = getTheme(level);
   const isHard = level % 5 === 0;
 
-  const title = `Level ${level} - ${collection.name} Collection | JigSolitaire Free Online Puzzle`;
-  const description = `Play JigSolitaire Level ${level} free online! A ${theme.adjective} ${puzzleType.toLowerCase()} puzzle from the ${collection.name} collection. ${difficulty} difficulty, estimated ${estimatedTime}. No download required.`;
+  const title = `Play JigSolitaire Level ${level} Online Free — ${collection.name} Jigsaw Solitaire Puzzle`;
+  const description = `Play JigSolitaire Level ${level} free online! A ${theme.adjective} ${puzzleType.toLowerCase()} jigsaw solitaire puzzle from the ${collection.name} collection. ${difficulty} difficulty, ${estimatedTime}. No download, instant play on any device.`;
   
-  const h1 = `JigSolitaire Level ${level}: ${collection.name} ${theme.noun.charAt(0).toUpperCase() + theme.noun.slice(1)}`;
+  const h1 = `Play JigSolitaire Level ${level} — ${collection.name} Collection`;
   
   const intro = isHard
-    ? `Welcome to Level ${level} of JigSolitaire, an expert-level challenge from our ${collection.name} collection featuring ${collection.theme}. This special milestone level presents you with three connected 4x4 puzzles that must be solved in sequence. Test your puzzle-solving mastery with this ${theme.adjective} multi-puzzle experience.`
-    : `Welcome to Level ${level} of JigSolitaire, a ${theme.adjective} puzzle experience from our ${collection.name} collection featuring ${collection.theme}. This ${difficulty.toLowerCase()}-difficulty ${puzzleType.toLowerCase()} puzzle offers the perfect blend of challenge and relaxation. Drag and drop pieces to complete the image and earn up to 3 stars!`;
+    ? `Welcome to JigSolitaire Level ${level}, an expert-level jigsaw solitaire challenge from our ${collection.name} collection featuring ${collection.theme}. This special milestone JigSolitaire level presents you with three connected 4x4 puzzles that must be solved in sequence. Test your JigSolitaire puzzle-solving mastery with this ${theme.adjective} multi-puzzle experience.`
+    : `Welcome to JigSolitaire Level ${level}, a ${theme.adjective} jigsaw solitaire puzzle experience from our ${collection.name} collection featuring ${collection.theme}. This ${difficulty.toLowerCase()}-difficulty JigSolitaire ${puzzleType.toLowerCase()} puzzle offers the perfect blend of challenge and relaxation. Drag and drop pieces to complete the image and earn up to 3 stars!`;
 
   const features = isHard
     ? [
-        `Expert ${puzzleType} with three sequential puzzles`,
-        `Part of the exclusive ${collection.name} collection`,
+        `Expert JigSolitaire ${puzzleType} with three sequential puzzles`,
+        `Part of the exclusive JigSolitaire ${collection.name} collection`,
         `Estimated completion time: ${estimatedTime}`,
-        `Unlock by completing previous levels`,
+        `Unlock by completing previous JigSolitaire levels`,
         `Earn triple star rewards for fast completion`,
         `Beautiful HD imagery from ${collection.theme}`,
       ]
     : [
-        `${difficulty} difficulty ${puzzleType} format`,
-        `Curated image from the ${collection.name} collection`,
+        `${difficulty} difficulty JigSolitaire ${puzzleType} format`,
+        `Curated image from the JigSolitaire ${collection.name} collection`,
         `Estimated completion time: ${estimatedTime}`,
-        `Auto-save progress as you play`,
+        `Auto-save your JigSolitaire progress as you play`,
         `Earn up to 3 stars based on completion time`,
-        `Perfect for quick puzzle breaks`,
+        `Perfect for quick JigSolitaire puzzle breaks`,
       ];
 
   const tips = isHard
     ? [
-        'Start by identifying corner pieces in each puzzle',
-        'Complete one puzzle fully before moving to the next',
+        'Start by identifying corner pieces in each JigSolitaire puzzle',
+        'Complete one JigSolitaire puzzle fully before moving to the next',
         'Look for edge pieces with distinctive colors',
-        'Take breaks between puzzles if needed',
-        'Use the hint button strategically',
+        'Take breaks between JigSolitaire puzzles if needed',
+        'Use the JigSolitaire hint button strategically',
       ]
     : [
-        'Begin with corner pieces for easier placement',
+        'Begin with corner pieces for easier JigSolitaire placement',
         'Match colors and patterns along edges',
-        'Complete under 10 seconds for 3 stars',
+        'Complete JigSolitaire under 10 seconds for 3 stars',
         'Tap two pieces to swap their positions',
-        'Use shuffle if you get stuck',
+        'Use the JigSolitaire shuffle feature if you get stuck',
       ];
 
   return {
@@ -145,27 +145,30 @@ export function getLevelSEOData(level: number): LevelSEOData {
   };
 }
 
-export function generateLevelStructuredData(level: number, baseUrl: string): object {
+export function generateLevelStructuredData(level: number, baseUrl: string): object[] {
   const seo = getLevelSEOData(level);
   
-  return {
+  // Main WebPage schema
+  const webPageSchema = {
     '@context': 'https://schema.org',
     '@type': 'WebPage',
     name: seo.title,
     description: seo.description,
     url: `${baseUrl}/level/${level}`,
     mainEntity: {
-      '@type': 'Game',
+      '@type': 'VideoGame',
       name: `JigSolitaire Level ${level}`,
       description: seo.intro,
-      genre: ['Puzzle', 'Jigsaw', 'Casual'],
-      gamePlatform: ['Web Browser'],
+      genre: ['Puzzle', 'Jigsaw', 'Solitaire', 'Casual'],
+      gamePlatform: ['Web Browser', 'Mobile Browser'],
       applicationCategory: 'Game',
       operatingSystem: 'Any',
+      playMode: 'SinglePlayer',
       offers: {
         '@type': 'Offer',
         price: '0',
         priceCurrency: 'USD',
+        availability: 'https://schema.org/InStock',
       },
     },
     breadcrumb: {
@@ -174,23 +177,57 @@ export function generateLevelStructuredData(level: number, baseUrl: string): obj
         {
           '@type': 'ListItem',
           position: 1,
-          name: 'Home',
+          name: 'JigSolitaire Home',
           item: baseUrl,
         },
         {
           '@type': 'ListItem',
           position: 2,
-          name: 'Levels',
+          name: 'JigSolitaire Levels',
           item: `${baseUrl}/levels`,
         },
         {
           '@type': 'ListItem',
           position: 3,
-          name: `Level ${level}`,
+          name: `JigSolitaire Level ${level}`,
           item: `${baseUrl}/level/${level}`,
         },
       ],
     },
   };
+
+  // FAQ schema for level-specific questions
+  const faqSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: [
+      {
+        '@type': 'Question',
+        name: `How do I play JigSolitaire Level ${level}?`,
+        acceptedAnswer: {
+          '@type': 'Answer',
+          text: `To play JigSolitaire Level ${level}, tap on a puzzle piece to select it, then tap another piece to swap their positions. Continue swapping until all pieces are in their correct positions to complete the puzzle.`,
+        },
+      },
+      {
+        '@type': 'Question',
+        name: `Is JigSolitaire Level ${level} free to play?`,
+        acceptedAnswer: {
+          '@type': 'Answer',
+          text: `Yes! JigSolitaire Level ${level} is completely free to play. No downloads, no sign-ups, and no hidden costs. Just open your browser and start playing instantly.`,
+        },
+      },
+      {
+        '@type': 'Question',
+        name: `What is the difficulty of JigSolitaire Level ${level}?`,
+        acceptedAnswer: {
+          '@type': 'Answer',
+          text: `JigSolitaire Level ${level} is rated as ${seo.difficulty} difficulty. It uses a ${seo.puzzleType.toLowerCase()} format and is estimated to take ${seo.estimatedTime} to complete.`,
+        },
+      },
+    ],
+  };
+
+  return [webPageSchema, faqSchema];
 }
 

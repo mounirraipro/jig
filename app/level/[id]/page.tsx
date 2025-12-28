@@ -79,14 +79,17 @@ export default async function LevelPage({ params }: PageProps) {
   }
 
   const seo = getLevelSEOData(level);
-  const structuredData = generateLevelStructuredData(level, BASE_URL);
+  const structuredDataArray = generateLevelStructuredData(level, BASE_URL);
 
   return (
     <>
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
-      />
+      {structuredDataArray.map((schema, index) => (
+        <script
+          key={index}
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
+        />
+      ))}
       <LevelGameClient level={level} seoData={seo} />
     </>
   );

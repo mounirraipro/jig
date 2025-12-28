@@ -1,6 +1,6 @@
 import { MetadataRoute } from 'next';
 
-const BUILD_DATE = '2025-12-17';
+const BUILD_DATE = '2025-12-28';
 const BASE_URL = 'https://jigsolitaire.online';
 
 export default function sitemap(): MetadataRoute.Sitemap {

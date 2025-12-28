@@ -1,0 +1,33 @@
+{
+  "name": "JigSolitaire - Free Online Jigsaw Solitaire Puzzle Game",
+  "short_name": "JigSolitaire",
+  "description": "Play JigSolitaire online free — the ultimate jigsaw solitaire puzzle game! No download, mobile friendly, instant puzzle fun. 77+ levels.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#f59e0b",
+  "orientation": "any",
+  "scope": "/",
+  "icons": [
+    {
+      "src": "/Jigsolitaire.online_Thmbnail.png",
+      "sizes": "1024x1024",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    },
+    {
+      "src": "/apple-icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ],
+  "categories": ["games", "puzzle", "entertainment"],
+  "lang": "en",
+  "dir": "ltr"
+}

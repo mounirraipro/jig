@@ -1,22 +1,69 @@
-// Background music handler with fade in/out transitions
+// Background music handler with persistent state across page navigation
+// Music continues playing seamlessly during level changes
 
 type MusicEventCallback = () => void;
+
+interface MusicState {
+  isPlaying: boolean;
+  currentTrackIndex: number;
+  currentTime: number;
+  volume: number;
+}
+
+const STORAGE_KEY = 'jigsolitaire_music_state';
 
 class BackgroundMusicManager {
   private tracks: HTMLAudioElement[] = [];
   private currentTrackIndex: number = 0;
   private isEnabled: boolean = true;
   private isPlaying: boolean = false;
-  private fadeDuration: number = 1000; // 1 second fade
+  private fadeDuration: number = 1000;
   private fadeInterval: number | null = null;
   private volume: number = 0.3;
   private readonly MAX_TRACKS = 10;
   private listeners: Set<MusicEventCallback> = new Set();
   private loadedTrackCount: number = 0;
+  private initialized: boolean = false;
+  private pendingPlay: boolean = false;
 
   constructor() {
     if (typeof window !== 'undefined') {
+      this.loadState();
       this.loadTracks();
+      
+      // Save state periodically and on page unload
+      window.addEventListener('beforeunload', () => this.saveState());
+      setInterval(() => this.saveState(), 5000);
+    }
+  }
+
+  private loadState() {
+    try {
+      const saved = localStorage.getItem(STORAGE_KEY);
+      if (saved) {
+        const state: MusicState = JSON.parse(saved);
+        this.currentTrackIndex = state.currentTrackIndex || 0;
+        this.volume = state.volume ?? 0.3;
+        // Remember if music was playing
+        this.pendingPlay = state.isPlaying || false;
+      }
+    } catch {
+      // Ignore storage errors
+    }
+  }
+
+  private saveState() {
+    try {
+      const currentTrack = this.getCurrentTrack();
+      const state: MusicState = {
+        isPlaying: this.isPlaying,
+        currentTrackIndex: this.currentTrackIndex,
+        currentTime: currentTrack?.currentTime || 0,
+        volume: this.volume,
+      };
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+    } catch {
+      // Ignore storage errors
     }
   }
 
@@ -35,7 +82,12 @@ class BackgroundMusicManager {
 
       audio.addEventListener('canplaythrough', () => {
         this.loadedTrackCount++;
-      });
+        // Restore playback state once tracks are loaded
+        if (!this.initialized && this.loadedTrackCount > 0) {
+          this.initialized = true;
+          this.restorePlayback();
+        }
+      }, { once: true });
 
       audio.addEventListener('error', () => {
         const index = this.tracks.indexOf(audio);
@@ -59,7 +111,31 @@ class BackgroundMusicManager {
     this.tracks = tracksToLoad;
   }
 
-  // Subscribe to state changes
+  private async restorePlayback() {
+    if (!this.pendingPlay) return;
+    
+    try {
+      const saved = localStorage.getItem(STORAGE_KEY);
+      if (saved) {
+        const state: MusicState = JSON.parse(saved);
+        const track = this.getCurrentTrack();
+        
+        if (track && state.currentTime > 0) {
+          track.currentTime = Math.min(state.currentTime, track.duration || state.currentTime);
+        }
+        
+        if (state.isPlaying) {
+          // Small delay to allow page to be interactive
+          setTimeout(() => {
+            this.play().catch(() => {});
+          }, 100);
+        }
+      }
+    } catch {
+      // Ignore restore errors
+    }
+  }
+
   subscribe(callback: MusicEventCallback): () => void {
     this.listeners.add(callback);
     return () => this.listeners.delete(callback);
@@ -93,7 +169,7 @@ class BackgroundMusicManager {
             this.fadeInterval = null;
           }
           track.pause();
-          track.currentTime = 0;
+          // Don't reset currentTime - keep position for seamless resume
           callback();
           resolve();
         }
@@ -106,10 +182,11 @@ class BackgroundMusicManager {
       clearInterval(this.fadeInterval);
     }
 
-    track.volume = 0;
+    // Start from current volume (might be resuming)
+    const startVolume = track.volume;
     const steps = 20;
     const stepDuration = this.fadeDuration / steps;
-    const volumeStep = this.volume / steps;
+    const volumeStep = (this.volume - startVolume) / steps;
 
     return new Promise<void>((resolve) => {
       this.fadeInterval = window.setInterval(() => {
@@ -137,20 +214,22 @@ class BackgroundMusicManager {
 
     if (this.isPlaying) {
       await this.fadeOut(currentTrack, () => {});
-    } else {
-      currentTrack.pause();
-      currentTrack.currentTime = 0;
     }
+    
+    currentTrack.pause();
+    currentTrack.currentTime = 0;
 
     this.currentTrackIndex = (this.currentTrackIndex + 1) % this.tracks.length;
     this.notifyListeners();
+    this.saveState();
 
     if (this.isPlaying) {
       const nextTrack = this.getCurrentTrack();
       if (nextTrack) {
         nextTrack.currentTime = 0;
-        await this.fadeIn(nextTrack);
+        nextTrack.volume = 0;
         await nextTrack.play().catch(() => {});
+        await this.fadeIn(nextTrack);
       }
     }
   }
@@ -161,20 +240,22 @@ class BackgroundMusicManager {
 
     if (this.isPlaying) {
       await this.fadeOut(currentTrack, () => {});
-    } else {
-      currentTrack.pause();
-      currentTrack.currentTime = 0;
     }
+    
+    currentTrack.pause();
+    currentTrack.currentTime = 0;
 
     this.currentTrackIndex = (this.currentTrackIndex - 1 + this.tracks.length) % this.tracks.length;
     this.notifyListeners();
+    this.saveState();
 
     if (this.isPlaying) {
       const prevTrack = this.getCurrentTrack();
       if (prevTrack) {
         prevTrack.currentTime = 0;
-        await this.fadeIn(prevTrack);
+        prevTrack.volume = 0;
         await prevTrack.play().catch(() => {});
+        await this.fadeIn(prevTrack);
       }
     }
   }
@@ -187,12 +268,19 @@ class BackgroundMusicManager {
 
     this.isPlaying = true;
     this.notifyListeners();
+    this.saveState();
 
     try {
-      if (currentTrack.currentTime === 0 || currentTrack.paused) {
-        await this.fadeIn(currentTrack);
+      // If track is already playing at target volume, do nothing
+      if (!currentTrack.paused && currentTrack.volume >= this.volume) {
+        return;
       }
-      await currentTrack.play();
+      
+      // Resume or start playing
+      if (currentTrack.paused) {
+        await currentTrack.play();
+      }
+      await this.fadeIn(currentTrack);
     } catch {
       this.isPlaying = false;
       this.notifyListeners();
@@ -200,23 +288,31 @@ class BackgroundMusicManager {
   }
 
   async stop() {
+    const wasPlaying = this.isPlaying;
     this.isPlaying = false;
     this.notifyListeners();
     
     const currentTrack = this.getCurrentTrack();
-    if (currentTrack) {
+    if (currentTrack && wasPlaying) {
       await this.fadeOut(currentTrack, () => {});
+      // Reset to beginning when stopped (not paused)
+      currentTrack.currentTime = 0;
     }
+    
+    this.saveState();
   }
 
   pause() {
-    this.isPlaying = false;
-    this.notifyListeners();
-    
     const currentTrack = this.getCurrentTrack();
     if (currentTrack) {
+      // Save position before pausing
+      this.saveState();
       currentTrack.pause();
     }
+    
+    this.isPlaying = false;
+    this.notifyListeners();
+    this.saveState();
   }
 
   async toggle() {
@@ -238,6 +334,7 @@ class BackgroundMusicManager {
         this.isPlaying = false;
         this.notifyListeners();
       });
+      this.fadeIn(currentTrack);
     }
   }
 
@@ -245,9 +342,8 @@ class BackgroundMusicManager {
     this.isEnabled = enabled;
     if (!enabled) {
       this.pause();
-    } else if (this.isPlaying) {
-      this.resume();
     }
+    // Don't auto-resume when enabled - let user control via MiniPlayer
   }
 
   setVolume(volume: number) {
@@ -257,6 +353,7 @@ class BackgroundMusicManager {
       currentTrack.volume = this.volume;
     }
     this.notifyListeners();
+    this.saveState();
   }
 
   // Getters for UI state
@@ -278,7 +375,7 @@ class BackgroundMusicManager {
 
   getProgress(): number {
     const track = this.getCurrentTrack();
-    if (!track || !track.duration) return 0;
+    if (!track || !track.duration || isNaN(track.duration)) return 0;
     return track.currentTime / track.duration;
   }
 
@@ -291,9 +388,19 @@ class BackgroundMusicManager {
     const track = this.getCurrentTrack();
     return track?.duration || 0;
   }
+
+  // Seek to position (0-1)
+  seek(position: number) {
+    const track = this.getCurrentTrack();
+    if (track && track.duration) {
+      track.currentTime = position * track.duration;
+      this.saveState();
+      this.notifyListeners();
+    }
+  }
 }
 
-// Singleton instance
+// Singleton instance - persists across component mounts
 let backgroundMusicInstance: BackgroundMusicManager | null = null;
 
 export function getBackgroundMusicManager(): BackgroundMusicManager {

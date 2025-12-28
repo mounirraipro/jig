@@ -6,35 +6,24 @@ import { getBackgroundMusicManager } from '../utils/backgroundMusic';
 
 export default function MiniPlayer() {
   const [isPlaying, setIsPlaying] = useState(false);
-  const [currentTrack, setCurrentTrack] = useState(1);
-  const [totalTracks, setTotalTracks] = useState(0);
   const [isExpanded, setIsExpanded] = useState(false);
   const [progress, setProgress] = useState(0);
   const [isTransitioning, setIsTransitioning] = useState(false);
-  const [displayTrack, setDisplayTrack] = useState(1);
   const [transitionDirection, setTransitionDirection] = useState<'next' | 'prev' | null>(null);
 
   // Refs for GSAP animations
   const containerRef = useRef<HTMLDivElement>(null);
   const controlsRef = useRef<HTMLDivElement>(null);
-  const trackIndicatorRef = useRef<HTMLDivElement>(null);
   const visualizerRef = useRef<HTMLDivElement>(null);
   const barsRef = useRef<HTMLDivElement>(null);
-  const trackNumberRef = useRef<HTMLDivElement>(null);
   const waveRippleRef = useRef<HTMLDivElement>(null);
   const discRef = useRef<HTMLDivElement>(null);
 
   const updateState = useCallback(() => {
     const manager = getBackgroundMusicManager();
     setIsPlaying(manager.getIsPlaying());
-    const trackNum = manager.getCurrentTrackIndex() + 1;
-    setCurrentTrack(trackNum);
-    if (!isTransitioning) {
-      setDisplayTrack(trackNum);
-    }
-    setTotalTracks(manager.getTotalTracks());
     setProgress(manager.getProgress());
-  }, [isTransitioning]);
+  }, []);
 
   useEffect(() => {
     const manager = getBackgroundMusicManager();
@@ -48,46 +37,56 @@ export default function MiniPlayer() {
       }
     }, 100);
 
+    // Auto-play on first user interaction (browsers require user gesture for audio)
+    const attemptAutoPlay = () => {
+      if (!manager.getIsPlaying()) {
+        manager.play().catch(() => {
+          // If autoplay fails, we'll wait for user interaction
+        });
+      }
+      // Remove listeners after first attempt
+      document.removeEventListener('click', attemptAutoPlay);
+      document.removeEventListener('touchstart', attemptAutoPlay);
+      document.removeEventListener('keydown', attemptAutoPlay);
+    };
+
+    // Try autoplay immediately (works if returning user or allowed by browser)
+    setTimeout(() => {
+      manager.play().catch(() => {
+        // Autoplay blocked - add listeners for first interaction
+        document.addEventListener('click', attemptAutoPlay, { once: true });
+        document.addEventListener('touchstart', attemptAutoPlay, { once: true });
+        document.addEventListener('keydown', attemptAutoPlay, { once: true });
+      });
+    }, 1000);
+
     return () => {
       unsubscribe();
       clearInterval(progressInterval);
+      document.removeEventListener('click', attemptAutoPlay);
+      document.removeEventListener('touchstart', attemptAutoPlay);
+      document.removeEventListener('keydown', attemptAutoPlay);
     };
   }, [updateState]);
 
   // GSAP expand/collapse animation
   useEffect(() => {
-    if (!controlsRef.current || !trackIndicatorRef.current) return;
-
-    const tl = gsap.timeline();
+    if (!controlsRef.current) return;
 
     if (isExpanded) {
-      // Expand animation
-      tl.to(controlsRef.current, {
+      gsap.to(controlsRef.current, {
         width: 'auto',
         opacity: 1,
         duration: 0.4,
         ease: 'power3.out',
-      })
-      .to(trackIndicatorRef.current, {
-        opacity: 0,
-        scale: 0.8,
-        duration: 0.2,
-        ease: 'power2.in',
-      }, 0);
+      });
     } else {
-      // Collapse animation
-      tl.to(controlsRef.current, {
+      gsap.to(controlsRef.current, {
         width: 0,
         opacity: 0,
         duration: 0.3,
         ease: 'power3.inOut',
-      })
-      .to(trackIndicatorRef.current, {
-        opacity: 1,
-        scale: 1,
-        duration: 0.3,
-        ease: 'power2.out',
-      }, 0.1);
+      });
     }
   }, [isExpanded]);
 
@@ -179,17 +178,6 @@ export default function MiniPlayer() {
       }, 0);
     }
 
-    // Step 4: Animate track number sliding out
-    if (trackNumberRef.current) {
-      tl.to(trackNumberRef.current, {
-        y: direction === 'next' ? -15 : 15,
-        opacity: 0,
-        scale: 0.7,
-        duration: 0.2,
-        ease: 'power2.in',
-      }, 0);
-    }
-
     // Wait for exit animations
     await tl;
 
@@ -229,22 +217,7 @@ export default function MiniPlayer() {
       );
     }
 
-    // Step 3: Animate track number sliding in
-    if (trackNumberRef.current) {
-      tl.fromTo(trackNumberRef.current, 
-        { y: direction === 'next' ? 15 : -15, opacity: 0, scale: 0.7 },
-        { 
-          y: 0, 
-          opacity: 1, 
-          scale: 1, 
-          duration: 0.35, 
-          ease: 'back.out(1.7)',
-        }, 
-        0.1
-      );
-    }
-
-    // Step 4: Bounce effect on container
+    // Step 3: Bounce effect on container
     if (containerRef.current) {
       tl.fromTo(containerRef.current, 
         { scale: 1.05 },
@@ -273,7 +246,6 @@ export default function MiniPlayer() {
     // Change track
     await manager.nextTrack();
     updateState();
-    setDisplayTrack(manager.getCurrentTrackIndex() + 1);
 
     // Animate in
     await animateTrackEnter(animData.xIn, animData.rotateIn, animData.direction);
@@ -295,7 +267,6 @@ export default function MiniPlayer() {
     // Change track
     await manager.previousTrack();
     updateState();
-    setDisplayTrack(manager.getCurrentTrackIndex() + 1);
 
     // Animate in
     await animateTrackEnter(animData.xIn, animData.rotateIn, animData.direction);
@@ -480,30 +451,6 @@ export default function MiniPlayer() {
           </button>
         </div>
 
-        {/* Track indicator - visible when collapsed */}
-        <div 
-          ref={trackIndicatorRef}
-          className="relative overflow-hidden pr-1"
-        >
-          <div 
-            ref={trackNumberRef}
-            className="text-[11px] font-semibold text-slate-500 tabular-nums"
-            style={{
-              transition: 'color 0.2s ease',
-              color: isTransitioning ? 'var(--color-primary, #f59e0b)' : undefined,
-            }}
-          >
-            {totalTracks > 0 && (
-              <span className="flex items-center gap-0.5">
-                <span className={`inline-block ${transitionDirection ? 'font-bold' : ''}`}>
-                  {displayTrack}
-                </span>
-                <span className="text-slate-400">/</span>
-                <span>{totalTracks}</span>
-              </span>
-            )}
-          </div>
-        </div>
       </div>
 
       <style jsx>{`
