@@ -79,7 +79,7 @@ function GamePageContent() {
     // Skip for bots/crawlers to not affect SEO
     const isBot = /bot|crawler|spider|googlebot|bingbot|slurp|duckduckbot|baiduspider|yandexbot|facebookexternalhit|twitterbot|linkedinbot/i.test(navigator.userAgent);
     if (isBot) return;
-    
+
     const info = checkDailyVisit();
     if (info) {
       setStreakInfo(info);
@@ -101,12 +101,12 @@ function GamePageContent() {
   // Track play time for statistics
   useEffect(() => {
     startPlaySession();
-    
+
     // Save time every 30 seconds
     const saveInterval = setInterval(() => {
       savePlaySession();
     }, 30000);
-    
+
     // Save on page visibility change
     const handleVisibilityChange = () => {
       if (document.hidden) {
@@ -114,7 +114,7 @@ function GamePageContent() {
       }
     };
     document.addEventListener('visibilitychange', handleVisibilityChange);
-    
+
     return () => {
       clearInterval(saveInterval);
       document.removeEventListener('visibilitychange', handleVisibilityChange);
@@ -208,13 +208,13 @@ function GamePageContent() {
     try {
       // Use default dimensions initially, update when image loads
       let imageAspectRatio = 1;
-      
+
       if (skipDimensionWait) {
         // Start with square tiles, update async
         const baseTileWidth = 100;
         setTileDimensions({ width: baseTileWidth, height: baseTileWidth });
         setGridSize(gridSize);
-        
+
         // Load dimensions in background and update
         getImageDimensions(image.url).then(dims => {
           const ratio = dims.width / dims.height;
@@ -326,7 +326,7 @@ function GamePageContent() {
       const lastLevel = getLastPlayedLevel();
       const levelToLoad = Math.min(lastLevel, availableImages.length);
       level = levelToLoad;
-      
+
       const selectedImage = availableImages[levelToLoad - 1];
       const tiles = await createNewGame(selectedImage, 3);
       setTiles(tiles);
@@ -337,7 +337,7 @@ function GamePageContent() {
     if (level) {
       setLastPlayedLevel(level);
     }
-    
+
     setCurrentLevel(level);
     setSelectedTile(null);
     setMoves(0);
@@ -377,7 +377,7 @@ function GamePageContent() {
 
       setAvailableImages(mappedImages);
       setLoadError(null);
-      
+
       // Preload first few images in background
       mappedImages.slice(0, 5).forEach(img => {
         const preload = new Image();
@@ -586,7 +586,7 @@ function GamePageContent() {
       setHintedTileId(null);
       setEarnedStars(0);
       previousCorrectCountRef.current = 0;
-      
+
       if (timerRef.current) clearInterval(timerRef.current);
       const startTime = Date.now();
       timerRef.current = setInterval(() => {
@@ -612,7 +612,7 @@ function GamePageContent() {
       setHintedTileId(null);
       setEarnedStars(0);
       previousCorrectCountRef.current = 0;
-      
+
       // Restart timer
       if (timerRef.current) clearInterval(timerRef.current);
       const startTime = Date.now();
@@ -631,23 +631,23 @@ function GamePageContent() {
   // Fast level switching without page reload - instant transition
   const switchToLevel = useCallback(async (level: number) => {
     if (level < 1 || level > availableImages.length) return;
-    
+
     setIsTransitioning(true);
     setLastPlayedLevel(level);
-    
+
     const isHard = level % 5 === 0;
     setIsHardLevel(isHard);
     setCurrentLevel(level);
-    
+
     // Update URL without navigation
     window.history.replaceState({}, '', `/?level=${level}`);
-    
+
     // Preload next level's image
     if (level < availableImages.length) {
       const nextImg = new Image();
       nextImg.src = availableImages[level].url;
     }
-    
+
     if (isHard) {
       const imageIndices: number[] = [];
       const baseIndex = level - 1;
@@ -666,7 +666,7 @@ function GamePageContent() {
       setCurrentImage(selectedImage);
       setPuzzleSets([]);
     }
-    
+
     setSelectedTile(null);
     setMoves(0);
     setStartTime(Date.now());
@@ -675,7 +675,7 @@ function GamePageContent() {
     setIsComplete(false);
     setHintedTileId(null);
     setEarnedStars(0);
-    
+
     // Short delay for smooth visual transition
     requestAnimationFrame(() => {
       setIsTransitioning(false);
@@ -763,12 +763,12 @@ function GamePageContent() {
                 Lv.{currentLevel}
               </span>
             )}
-            
+
             {/* Mini Music Player - hidden on small mobile */}
             <div className="hidden sm:block">
               <MiniPlayer />
             </div>
-            
+
             <button
               onClick={() => router.push('/settings')}
               className="btn-ghost rounded-full h-9 w-9 sm:h-10 sm:w-10 p-0 flex items-center justify-center"
@@ -818,6 +818,7 @@ function GamePageContent() {
                   onTileClick={handleTileClick}
                   onTileDragSwap={handleTileDragSwap}
                   compact={isHardLevel}
+                  isHardLevel={isHardLevel}
                   tileWidth={tileDimensions.width}
                   tileHeight={tileDimensions.height}
                   imageUrl={currentImage?.url || ''}
@@ -835,12 +836,12 @@ function GamePageContent() {
                 onPlayAgain={handlePlayAgain}
                 onNextLevel={currentLevel !== null ? handleNextLevel : undefined}
               />
-              
+
               {/* Streak Popup - shown on first daily visit */}
               {showStreakPopup && streakInfo && (
-                <StreakPopup 
-                  streakInfo={streakInfo} 
-                  onClose={() => setShowStreakPopup(false)} 
+                <StreakPopup
+                  streakInfo={streakInfo}
+                  onClose={() => setShowStreakPopup(false)}
                 />
               )}
             </div>
@@ -878,14 +879,14 @@ function GamePageContent() {
             <div className="flex items-center gap-4">
               <div className="flex items-center gap-1.5">
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="text-slate-400">
-                  <path d="M5 12h14M12 5l7 7-7 7"/>
+                  <path d="M5 12h14M12 5l7 7-7 7" />
                 </svg>
                 <span className="text-sm font-semibold text-slate-700 tabular-nums">{moves}</span>
               </div>
               <div className="flex items-center gap-1.5">
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="text-slate-400">
-                  <circle cx="12" cy="12" r="10"/>
-                  <path d="M12 6v6l4 2"/>
+                  <circle cx="12" cy="12" r="10" />
+                  <path d="M12 6v6l4 2" />
                 </svg>
                 <span className="text-sm font-semibold text-slate-700 tabular-nums">{time}</span>
               </div>
@@ -893,7 +894,7 @@ function GamePageContent() {
             {/* Progress bar */}
             <div className="flex items-center gap-2">
               <div className="w-16 h-1.5 bg-slate-200 rounded-full overflow-hidden">
-                <div 
+                <div
                   className="h-full bg-yellow-500 rounded-full transition-all duration-300"
                   style={{ width: `${progress}%` }}
                 />
@@ -901,7 +902,7 @@ function GamePageContent() {
               <span className="text-xs font-semibold text-slate-500">{Math.round(progress)}%</span>
             </div>
           </div>
-          
+
           {/* Mobile Controls Row */}
           <div className="flex items-center justify-between px-2 py-2">
             {/* Level Navigation */}
@@ -913,7 +914,7 @@ function GamePageContent() {
                 aria-label="Previous level"
               >
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-                  <path d="M15 18l-6-6 6-6"/>
+                  <path d="M15 18l-6-6 6-6" />
                 </svg>
               </button>
               <button
@@ -921,10 +922,10 @@ function GamePageContent() {
                 className="h-10 px-3 flex items-center gap-1.5 rounded-full bg-slate-100 text-slate-700 font-semibold text-sm active:scale-95 transition-transform"
               >
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                  <rect x="3" y="3" width="7" height="7"/>
-                  <rect x="14" y="3" width="7" height="7"/>
-                  <rect x="14" y="14" width="7" height="7"/>
-                  <rect x="3" y="14" width="7" height="7"/>
+                  <rect x="3" y="3" width="7" height="7" />
+                  <rect x="14" y="3" width="7" height="7" />
+                  <rect x="14" y="14" width="7" height="7" />
+                  <rect x="3" y="14" width="7" height="7" />
                 </svg>
                 <span>Levels</span>
               </button>
@@ -935,7 +936,7 @@ function GamePageContent() {
                 aria-label="Next level"
               >
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-                  <path d="M9 18l6-6-6-6"/>
+                  <path d="M9 18l6-6-6-6" />
                 </svg>
               </button>
             </div>
@@ -948,7 +949,7 @@ function GamePageContent() {
                 aria-label="Shuffle"
               >
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                  <path d="M16 3h5v5M4 20L21 3M21 16v5h-5M15 15l6 6M4 4l5 5"/>
+                  <path d="M16 3h5v5M4 20L21 3M21 16v5h-5M15 15l6 6M4 4l5 5" />
                 </svg>
               </button>
               {settings.showHints && (
@@ -958,7 +959,7 @@ function GamePageContent() {
                   aria-label="Hint"
                 >
                   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                    <path d="M9 18h6M10 22h4M12 2a7 7 0 0 1 7 7c0 2.38-1.19 4.47-3 5.74V17a1 1 0 0 1-1 1H9a1 1 0 0 1-1-1v-2.26C6.19 13.47 5 11.38 5 9a7 7 0 0 1 7-7z"/>
+                    <path d="M9 18h6M10 22h4M12 2a7 7 0 0 1 7 7c0 2.38-1.19 4.47-3 5.74V17a1 1 0 0 1-1 1H9a1 1 0 0 1-1-1v-2.26C6.19 13.47 5 11.38 5 9a7 7 0 0 1 7-7z" />
                   </svg>
                 </button>
               )}
@@ -968,8 +969,8 @@ function GamePageContent() {
                 aria-label="Restart"
               >
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                  <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/>
-                  <path d="M3 3v5h5"/>
+                  <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" />
+                  <path d="M3 3v5h5" />
                 </svg>
               </button>
             </div>

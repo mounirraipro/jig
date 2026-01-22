@@ -4,23 +4,25 @@ import {
   useMemo,
   useRef,
   useState,
+  useEffect,
   type PointerEvent as ReactPointerEvent,
 } from 'react';
-
-
+import gsap from 'gsap';
 import { Tile as TileType, TileMergeDirections, GroupBorderEdges } from '../types/game';
-
-const BASE_BORDER_WIDTH = 0;
-
-
 
 interface TileProps {
   tile: TileType;
   index: number;
   isSelected: boolean;
   isHinted: boolean;
+  isDragging?: boolean;
+  isDragTarget?: boolean;
   onClick: () => void;
-  onDragSwap: (fromIndex: number, toIndex: number) => void;
+  // Simplified Drag Events - Parent handles the logic
+  onDragStart?: (e: ReactPointerEvent<HTMLDivElement>) => void;
+  onDragMove?: (e: ReactPointerEvent<HTMLDivElement>) => void;
+  onDragEnd?: (e: ReactPointerEvent<HTMLDivElement>) => void;
+
   width: number;
   height: number;
   imageUrl: string;
@@ -34,212 +36,173 @@ export default function Tile({
   imageUrl,
   isSelected,
   isHinted,
-  index,
+  isDragging = false,
+  isDragTarget = false,
   gridSize,
   onClick,
-  onDragSwap,
+  onDragStart,
+  onDragMove,
+  onDragEnd,
   mergeDirections,
   groupBorderEdges,
-  width,
-  height,
 }: TileProps) {
   const { currentPos, correctPos } = tile;
   const isCorrect = currentPos === correctPos;
   const [isHovered, setIsHovered] = useState(false);
-  const [isDragging, setIsDragging] = useState(false);
-  const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
   const tileRef = useRef<HTMLDivElement | null>(null);
-  const pointerIdRef = useRef<number | null>(null);
-  const startPositionRef = useRef({ x: 0, y: 0 });
-  const dragMovedRef = useRef(false);
 
-  const baseScale = useMemo(() => {
-    if (isDragging) return 1.05;
-    if (isHovered || isSelected) return 1.02;
-    return 1;
+  // --- Visuals / Animations ---
+
+  // React to Drag State
+  useEffect(() => {
+    if (!tileRef.current) return;
+
+    if (isDragging) {
+      // Lift up
+      gsap.to(tileRef.current, {
+        scale: 1.15,
+        zIndex: 100,
+        boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.2)',
+        duration: 0.2
+      });
+    } else {
+      // Put down
+      gsap.to(tileRef.current, {
+        scale: isHovered || isSelected ? 1.05 : 1,
+        zIndex: isSelected ? 50 : 1,
+        boxShadow: isSelected ? '0 10px 15px -3px rgba(0,0,0,0.1)' : 'none',
+        duration: 0.2
+      });
+      // We do NOT reset x/y here automatically, relying on FLIP in parent or direct control
+      // But for safety, if we aren't dragging, we should probably be at 0,0 distinct 
+      // from the parent's positioning?
+      // Actually, if the parent uses FLIP, the parent will set the 'style.top/left'
+      // and we might need to reset 'translate' if we used it for dragging.
+      // We'll assume the Drag handler in parent manages the 'transform' during drag,
+      // or we do it here. 
+      // For this refactor, let's keep simple local drag-following here?
+      // No, user assumes "Smart Grid". Parent should probably control POSITION.
+      // But for performance, local transform is better.
+      // Let's reset translation when not dragging.
+      gsap.to(tileRef.current, { x: 0, y: 0, duration: 0.2 });
+    }
   }, [isDragging, isHovered, isSelected]);
 
-  const borderStyles = useMemo(() => {
+  // Magnet / Target Effect
+  useEffect(() => {
+    if (!tileRef.current || isDragging) return;
+
+    if (isDragTarget) {
+      gsap.to(tileRef.current, { scale: 0.95, brightness: 1.2, duration: 0.2 });
+    } else if (!isHovered && !isSelected) {
+      gsap.to(tileRef.current, { scale: 1, brightness: 1, duration: 0.2 });
+    }
+  }, [isDragTarget, isDragging, isHovered, isSelected]);
+
+
+  // --- Event Handling ---
+  // We handle looking at the pointer to move the tile visually 'locally' 
+  // but report to parent for game logic.
+
+  const handlePointerDown = (e: ReactPointerEvent<HTMLDivElement>) => {
+    // If tile is locked (correct position), play shake animation and deny drag
     if (isCorrect) {
-      // For correct tiles, use group border style
-      const borderWidth = '2px';
-      const borderColor = 'rgba(255, 191, 0, 0.4)';
-
-      const {
-        top: groupTop = false,
-        right: groupRight = false,
-        bottom: groupBottom = false,
-        left: groupLeft = false,
-      } = groupBorderEdges || {};
-
-      return {
-        borderTopWidth: groupTop ? borderWidth : 0,
-        borderRightWidth: groupRight ? borderWidth : 0,
-        borderBottomWidth: groupBottom ? borderWidth : 0,
-        borderLeftWidth: groupLeft ? borderWidth : 0,
-        borderTopStyle: groupTop ? ('solid' as const) : ('none' as const),
-        borderRightStyle: groupRight ? ('solid' as const) : ('none' as const),
-        borderBottomStyle: groupBottom ? ('solid' as const) : ('none' as const),
-        borderLeftStyle: groupLeft ? ('solid' as const) : ('none' as const),
-        borderTopColor: groupTop ? borderColor : 'transparent',
-        borderRightColor: groupRight ? borderColor : 'transparent',
-        borderBottomColor: groupBottom ? borderColor : 'transparent',
-        borderLeftColor: groupLeft ? borderColor : 'transparent',
-      };
+      if (tileRef.current) {
+        gsap.to(tileRef.current, {
+          x: 5,
+          duration: 0.1,
+          yoyo: true,
+          repeat: 5,
+          ease: "sine.inOut",
+          onComplete: () => {
+            gsap.to(tileRef.current, { x: 0, duration: 0.1 });
+          }
+        });
+      }
+      return;
     }
 
-    // For incorrect tiles, remove borders on merged edges
-    const {
-      top: mergeTop = false,
-      right: mergeRight = false,
-      bottom: mergeBottom = false,
-      left: mergeLeft = false,
-    } = mergeDirections || {};
+    if (e.button !== 0) return;
+    e.preventDefault();
+    e.currentTarget.setPointerCapture(e.pointerId);
+    onDragStart?.(e);
+  };
 
+  const handlePointerMove = (e: ReactPointerEvent<HTMLDivElement>) => {
+    if (isDragging) {
+      onDragMove?.(e);
+    }
+  };
+
+  const handlePointerUp = (e: ReactPointerEvent<HTMLDivElement>) => {
+    e.currentTarget.releasePointerCapture(e.pointerId);
+    if (isDragging) {
+      onDragEnd?.(e);
+    } else {
+      onClick();
+    }
+  };
+
+
+  // --- Styles ---
+  const borderStyles = useMemo(() => {
+    if (isCorrect) {
+      const borderWidth = '2px';
+      const borderColor = 'rgba(255, 191, 0, 0.4)'; // Gold-ish
+      const { top = false, right = false, bottom = false, left = false } = groupBorderEdges || {};
+      return {
+        borderTopWidth: top ? borderWidth : 0,
+        borderRightWidth: right ? borderWidth : 0,
+        borderBottomWidth: bottom ? borderWidth : 0,
+        borderLeftWidth: left ? borderWidth : 0,
+        borderStyle: 'solid',
+        borderColor: borderColor,
+      };
+    }
+    const { top = false, right = false, bottom = false, left = false } = mergeDirections || {};
     return {
-      borderTopWidth: mergeTop ? 0 : '1px',
-      borderRightWidth: mergeRight ? 0 : '1px',
-      borderBottomWidth: mergeBottom ? 0 : '1px',
-      borderLeftWidth: mergeLeft ? 0 : '1px',
+      borderTopWidth: top ? 0 : '1px',
+      borderRightWidth: right ? 0 : '1px',
+      borderBottomWidth: bottom ? 0 : '1px',
+      borderLeftWidth: left ? 0 : '1px',
       borderStyle: 'solid',
-      borderColor: 'rgba(255, 255, 255, 0.1)',
+      borderColor: 'rgba(255, 255, 255, 0.2)',
     };
   }, [mergeDirections, isCorrect, groupBorderEdges]);
 
-  const borderRadiusStyles = useMemo(() => {
-    return { borderRadius: 0 };
-  }, []);
-
-  const handlePointerDown = (event: ReactPointerEvent<HTMLDivElement>) => {
-    if (isCorrect) {
-      event.preventDefault();
-      return;
-    }
-
-    if (event.button !== 0) return;
-    event.preventDefault();
-
-    pointerIdRef.current = event.pointerId;
-    startPositionRef.current = { x: event.clientX, y: event.clientY };
-    dragMovedRef.current = false;
-    setIsDragging(true);
-    setDragOffset({ x: 0, y: 0 });
-
-    tileRef.current?.setPointerCapture(event.pointerId);
-  };
-
-  const handlePointerMove = (event: ReactPointerEvent<HTMLDivElement>) => {
-    if (!isDragging || pointerIdRef.current !== event.pointerId) return;
-
-    const dx = event.clientX - startPositionRef.current.x;
-    const dy = event.clientY - startPositionRef.current.y;
-    const distance = Math.sqrt(dx * dx + dy * dy);
-    const threshold = 6;
-
-    if (!dragMovedRef.current && distance > threshold) {
-      dragMovedRef.current = true;
-    }
-
-    if (distance === 0) {
-      setDragOffset({ x: 0, y: 0 });
-      return;
-    }
-
-    const maxDistance = 92;
-    const normalized = Math.min(distance / maxDistance, 1);
-    const eased = 1 - Math.pow(1 - normalized, 2.4);
-    const limitedDistance = eased * maxDistance;
-    const factor = limitedDistance / distance;
-
-    setDragOffset({
-      x: dx * factor,
-      y: dy * factor,
-    });
-  };
-
-  const finishDrag = (event: ReactPointerEvent<HTMLDivElement>, cancelled = false) => {
-    if (!isDragging) return;
-
-    if (pointerIdRef.current !== null) {
-      tileRef.current?.releasePointerCapture(pointerIdRef.current);
-    }
-
-    setIsDragging(false);
-    setDragOffset({ x: 0, y: 0 });
-
-    if (!cancelled) {
-      if (dragMovedRef.current) {
-        const dropTarget = document.elementFromPoint(event.clientX, event.clientY) as HTMLElement | null;
-        const dropTile = dropTarget?.closest('[data-tile-index]') as HTMLElement | null;
-
-        if (dropTile) {
-          const dropIndex = Number(dropTile.dataset.tileIndex);
-          if (!Number.isNaN(dropIndex) && dropIndex !== index) {
-            onDragSwap(index, dropIndex);
-          }
-        }
-      } else {
-        onClick();
-      }
-    }
-
-    pointerIdRef.current = null;
-    dragMovedRef.current = false;
-  };
-
-  const handlePointerUp = (event: ReactPointerEvent<HTMLDivElement>) => {
-    finishDrag(event);
-  };
-
-  const handlePointerCancel = (event: ReactPointerEvent<HTMLDivElement>) => {
-    finishDrag(event, true);
-  };
-
-  const isLocked = isCorrect;
-
-  // Calculate background position based on correct position
+  // Background Image Position
   const bgPosition = useMemo(() => {
     const row = Math.floor(correctPos / gridSize);
     const col = correctPos % gridSize;
-    const percentX = (col / (gridSize - 1)) * 100;
-    const percentY = (row / (gridSize - 1)) * 100;
+    // e.g. 3x3 grid. items at 0, 1, 2.
+    // 0 -> 0%, 1 -> 50%, 2 -> 100%
+    const percentX = gridSize > 1 ? (col / (gridSize - 1)) * 100 : 0;
+    const percentY = gridSize > 1 ? (row / (gridSize - 1)) * 100 : 0;
     return `${percentX}% ${percentY}%`;
   }, [correctPos, gridSize]);
+
 
   return (
     <div
       ref={tileRef}
-      data-tile-index={index}
       onPointerDown={handlePointerDown}
       onPointerMove={handlePointerMove}
       onPointerUp={handlePointerUp}
-      onPointerCancel={handlePointerCancel}
-      onMouseEnter={() => !isLocked && setIsHovered(true)}
+      onPointerCancel={handlePointerUp}
+      onMouseEnter={() => !isCorrect && setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
-      className={`tile-content relative cursor-pointer overflow-hidden w-full h-full ${isCorrect ? 'z-0' : isSelected ? 'z-20 shadow-2xl' : 'z-10 hover:brightness-110'
-        }`}
+      className="tile-content relative w-full h-full select-none touch-none"
       style={{
         ...borderStyles,
-        ...borderRadiusStyles,
         background: 'var(--color-surface)',
-        transition: isDragging ? 'transform 70ms ease-out' : 'transform 200ms var(--motion-easing)',
-        boxShadow: isDragging
-          ? 'var(--shadow-elevated)'
-          : (isLocked
-            ? '0 2px 4px rgba(16,16,16,0.04)'
-            : '0 4px 8px rgba(16,16,16,0.1), 0 2px 4px rgba(16,16,16,0.06)'),
         outline: isSelected || isHinted ? '2px solid var(--color-primary)' : 'none',
-        outlineOffset: isSelected || isHinted ? '-2px' : '0',
-        pointerEvents: isLocked ? 'none' : 'auto',
-        margin: 0,
-        padding: 0,
-        width: '100%',
-        height: '100%',
-        // aspectRatio: `${width} / ${height}`, // Handled by parent container dimensions
-        boxSizing: 'border-box',
-        transform: isLocked
-          ? `scale(${baseScale})`
-          : `translate3d(${dragOffset.x}px, ${dragOffset.y}px, 0) scale(${baseScale})`,
+        outlineOffset: '-2px',
+        // Removed pointerEvents: none for isCorrect so it can still be grabbed
+        borderRadius: '8px',
+        cursor: isDragging ? 'grabbing' : 'grab',
+        overflow: 'hidden',
+        // Performance optimization
+        willChange: 'transform',
       }}
     >
       <div
@@ -253,15 +216,17 @@ export default function Tile({
         }}
       />
 
+      {/* Overlays */}
+      {!isCorrect && (isHovered || isDragging) && (
+        <div className="absolute inset-0 bg-white/10 pointer-events-none transition-opacity" />
+      )}
+
+      {isDragTarget && !isDragging && (
+        <div className="absolute inset-0 bg-amber-400/30 border-2 border-amber-400 pointer-events-none animate-pulse rounded-lg" />
+      )}
+
       {isHinted && !isCorrect && (
-        <div
-          className="pointer-events-none absolute inset-0 animate-[pulse_1.6s_ease-in-out_infinite] border-2"
-          style={{
-            borderColor: 'var(--color-primary)',
-            opacity: 0.6,
-            borderRadius: 0,
-          }}
-        />
+        <div className="pointer-events-none absolute inset-0 animate-[pulse_1.6s_ease-in-out_infinite] border-2 border-yellow-400 rounded-lg" />
       )}
     </div>
   );

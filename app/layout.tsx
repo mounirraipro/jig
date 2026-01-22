@@ -6,7 +6,7 @@ const BASE_URL = 'https://jigsolitaire.online';
 export const metadata: Metadata = {
   metadataBase: new URL(BASE_URL),
   title: {
-    default: "Play JigSolitaire Online – Free Jigsaw Solitaire Puzzle Game",
+    default: "JigSolitaire — Play Online Free Jigsaw Solitaire Puzzle Game",
     template: "%s | JigSolitaire",
   },
   description: "Play JigSolitaire online free — the ultimate jigsaw solitaire puzzle game! No download, mobile friendly, instant puzzle fun. 77+ levels, brain training, relaxing gameplay. Works on all devices.",

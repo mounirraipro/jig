@@ -24,8 +24,8 @@ const IconArt = () => (
 
 const IconMobile = () => (
   <svg className="w-6 h-6" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-    <rect x="5" y="2" width="14" height="20" rx="2" ry="2"/>
-    <path d="M12 18h.01"/>
+    <rect x="5" y="2" width="14" height="20" rx="2" ry="2" />
+    <path d="M12 18h.01" />
   </svg>
 );
 
@@ -124,7 +124,7 @@ const howToSteps = [
 // Generate structured data
 function generateStructuredData() {
   const BASE_URL = 'https://jigsolitaire.online';
-  
+
   // VideoGame Schema
   const videoGameSchema = {
     '@context': 'https://schema.org',
@@ -239,7 +239,7 @@ export default function SEOContent() {
 
   return (
     <section className="relative overflow-hidden bg-white" id="about-jigsolitaire">
-      
+
       {/* Hero Section with Main H1 */}
       <div className="relative py-20 lg:py-28 bg-gradient-to-b from-slate-50 to-white">
         {/* Subtle Grid Pattern */}
@@ -248,34 +248,34 @@ export default function SEOContent() {
             backgroundImage: `linear-gradient(#000 1px, transparent 1px),
                              linear-gradient(90deg, #000 1px, transparent 1px)`,
             backgroundSize: '40px 40px'
-          }}/>
+          }} />
         </div>
-        
+
         <div className="relative max-w-5xl mx-auto px-6 text-center">
           <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-amber-50 border border-amber-200 mb-8">
             <span className="w-1.5 h-1.5 rounded-full bg-amber-500" />
             <span className="text-xs font-semibold text-amber-700 uppercase tracking-wide">Free Online Jigsaw Solitaire Game</span>
           </div>
-          
+
           <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-slate-900 mb-6 tracking-tight leading-[1.1]">
-            Play JigSolitaire Online
+            JigSolitaire
             <span className="block text-transparent bg-clip-text bg-gradient-to-r from-amber-500 to-orange-500">
-              Free Jigsaw Solitaire Puzzle Game
+              Play Free Online Jigsaw Solitaire
             </span>
           </h1>
-          
+
           <p className="text-lg text-slate-600 max-w-2xl mx-auto mb-8 leading-relaxed">
-            Welcome to <strong>JigSolitaire</strong> — the ultimate free online jigsaw solitaire puzzle game! 
-            Combine classic jigsaw puzzle mechanics with solitaire-style gameplay. No downloads, instant play, 
+            Welcome to <strong>JigSolitaire</strong> — the ultimate free online jigsaw solitaire puzzle game!
+            Combine classic jigsaw puzzle mechanics with solitaire-style gameplay. No downloads, instant play,
             mobile-friendly, and perfect for brain training and relaxation.
           </p>
 
           <p className="text-base text-slate-500 max-w-2xl mx-auto mb-12 leading-relaxed">
-            Whether you&apos;re looking for a quick puzzle break at work, a relaxing game during your commute, 
-            or an engaging brain exercise, JigSolitaire offers 77+ beautifully curated puzzle levels that 
+            Whether you&apos;re looking for a quick puzzle break at work, a relaxing game during your commute,
+            or an engaging brain exercise, JigSolitaire offers 77+ beautifully curated puzzle levels that
             work seamlessly on any device.
           </p>
-          
+
           {/* Stats Row */}
           <div className="flex flex-wrap justify-center gap-8 md:gap-16">
             {[
@@ -301,9 +301,9 @@ export default function SEOContent() {
               What is JigSolitaire?
             </h2>
             <p className="text-slate-600 max-w-3xl mx-auto leading-relaxed">
-              <strong>JigSolitaire</strong> is a unique online puzzle game that blends the satisfaction of completing 
-              jigsaw puzzles with the strategic simplicity of solitaire. Unlike traditional jigsaw games where you 
-              freely place pieces, JigSolitaire challenges you to swap adjacent tiles until the image is complete — 
+              <strong>JigSolitaire</strong> is a unique online puzzle game that blends the satisfaction of completing
+              jigsaw puzzles with the strategic simplicity of solitaire. Unlike traditional jigsaw games where you
+              freely place pieces, JigSolitaire challenges you to swap adjacent tiles until the image is complete —
               creating a fresh, engaging puzzle experience that&apos;s easy to learn but endlessly enjoyable.
             </p>
           </div>
@@ -354,7 +354,7 @@ export default function SEOContent() {
               Discover why thousands of players choose JigSolitaire for their daily puzzle fix
             </p>
           </div>
-          
+
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
             {/* Large Feature Card */}
             <div className="md:col-span-2 lg:col-span-1 lg:row-span-2 group relative overflow-hidden rounded-2xl bg-gradient-to-br from-amber-50 to-orange-50 border border-amber-100 p-8 hover:shadow-lg transition-shadow">
@@ -364,7 +364,7 @@ export default function SEOContent() {
                 </div>
                 <h3 className="text-xl font-bold text-slate-900 mb-3">Instant Play — No Downloads</h3>
                 <p className="text-slate-600 leading-relaxed mb-4">
-                  Start playing JigSolitaire instantly in your web browser. No app downloads, no sign-ups, no waiting. 
+                  Start playing JigSolitaire instantly in your web browser. No app downloads, no sign-ups, no waiting.
                   Works perfectly on desktop, tablet, and mobile devices across all major browsers.
                 </p>
                 <div className="flex flex-wrap gap-2">
@@ -374,7 +374,7 @@ export default function SEOContent() {
                 </div>
               </div>
             </div>
-            
+
             {/* Regular Feature Cards */}
             {[
               {
@@ -440,7 +440,7 @@ export default function SEOContent() {
               Master JigSolitaire in 4 simple steps — it&apos;s easy to learn and endlessly fun!
             </p>
           </div>
-          
+
           <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {howToSteps.map((item) => (
               <div key={item.step} className="relative bg-white rounded-2xl p-6 border border-slate-200 hover:shadow-lg transition-shadow">
@@ -513,11 +513,11 @@ export default function SEOContent() {
                 JigSolitaire Puzzle Collections
               </h2>
               <p className="text-slate-600 leading-relaxed mb-8">
-                Explore 77+ handcrafted JigSolitaire puzzles organized into themed collections. 
-                From peaceful nature scenes to vibrant cityscapes, our curated library offers something for every puzzle lover. 
+                Explore 77+ handcrafted JigSolitaire puzzles organized into themed collections.
+                From peaceful nature scenes to vibrant cityscapes, our curated library offers something for every puzzle lover.
                 New themed packs are added regularly to keep your JigSolitaire experience fresh and exciting.
               </p>
-              
+
               <div className="space-y-4">
                 {[
                   { name: 'Discovery Collection', count: 'Levels 1-10', color: 'bg-amber-500', desc: 'Perfect for beginners' },
@@ -543,20 +543,20 @@ export default function SEOContent() {
                 </svg>
               </Link>
             </div>
-            
+
             {/* Visual Grid */}
             <div className="relative">
               <div className="absolute inset-0 bg-gradient-to-r from-amber-100/50 to-orange-100/50 rounded-3xl blur-2xl" />
               <div className="relative grid grid-cols-3 gap-3 p-5 bg-white rounded-2xl border border-slate-200 shadow-lg">
                 {[
                   'bg-gradient-to-br from-amber-400 to-orange-500',
-                  'bg-gradient-to-br from-emerald-400 to-teal-500', 
+                  'bg-gradient-to-br from-emerald-400 to-teal-500',
                   'bg-gradient-to-br from-sky-400 to-blue-500',
                   'bg-gradient-to-br from-rose-400 to-pink-500',
                   'bg-gradient-to-br from-violet-400 to-purple-500',
                   'bg-gradient-to-br from-slate-400 to-zinc-500',
                 ].map((gradient, i) => (
-                  <div 
+                  <div
                     key={i}
                     className={`aspect-square rounded-xl ${gradient} hover:scale-105 transition-transform cursor-pointer shadow-sm`}
                   />
@@ -579,7 +579,7 @@ export default function SEOContent() {
             </h2>
             <p className="text-slate-600">Everything you need to know about playing JigSolitaire online</p>
           </div>
-          
+
           <div className="space-y-4">
             {faqData.map((faq, i) => (
               <div key={i} className="bg-white rounded-xl border border-slate-200 p-6 hover:shadow-md transition-shadow">
@@ -608,27 +608,35 @@ export default function SEOContent() {
               { title: 'HD Images', desc: 'Crystal clear high-definition puzzle artwork', icon: <IconArt /> },
               { title: 'Auto-Save', desc: 'Progress saves automatically in your browser', icon: <IconProgress /> },
               { title: 'Touch Controls', desc: 'Optimized drag-and-drop for touchscreens', icon: <IconMobile /> },
-              { title: 'Star Ratings', desc: 'Earn up to 3 stars based on completion time', icon: (
-                <svg className="w-6 h-6" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-                  <path d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" />
-                </svg>
-              )},
+              {
+                title: 'Star Ratings', desc: 'Earn up to 3 stars based on completion time', icon: (
+                  <svg className="w-6 h-6" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                    <path d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" />
+                  </svg>
+                )
+              },
               { title: 'Hint System', desc: 'Get helpful hints when you\'re stuck', icon: <IconBrain /> },
-              { title: 'Level Progress', desc: '77+ levels with increasing difficulty', icon: (
-                <svg className="w-6 h-6" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-                  <path d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
-                </svg>
-              )},
-              { title: 'No Ads Interruption', desc: 'Clean, distraction-free gameplay', icon: (
-                <svg className="w-6 h-6" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-                  <path d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636" />
-                </svg>
-              )},
-              { title: 'Background Music', desc: 'Relaxing ambient soundscapes', icon: (
-                <svg className="w-6 h-6" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-                  <path d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3" />
-                </svg>
-              )},
+              {
+                title: 'Level Progress', desc: '77+ levels with increasing difficulty', icon: (
+                  <svg className="w-6 h-6" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                    <path d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
+                  </svg>
+                )
+              },
+              {
+                title: 'No Ads Interruption', desc: 'Clean, distraction-free gameplay', icon: (
+                  <svg className="w-6 h-6" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                    <path d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636" />
+                  </svg>
+                )
+              },
+              {
+                title: 'Background Music', desc: 'Relaxing ambient soundscapes', icon: (
+                  <svg className="w-6 h-6" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                    <path d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3" />
+                  </svg>
+                )
+              },
             ].map((feature, i) => (
               <div key={i} className="text-center p-6 rounded-xl border border-slate-200 hover:shadow-md transition-shadow">
                 <div className="w-12 h-12 mx-auto mb-4 rounded-xl bg-slate-100 flex items-center justify-center text-slate-600">
@@ -648,23 +656,23 @@ export default function SEOContent() {
           <div className="absolute inset-0" style={{
             backgroundImage: 'radial-gradient(circle, white 1px, transparent 1px)',
             backgroundSize: '24px 24px'
-          }}/>
+          }} />
         </div>
-        
+
         <div className="relative max-w-3xl mx-auto px-6 text-center">
           <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
             Ready to Play JigSolitaire?
           </h2>
           <p className="text-lg text-amber-100 mb-8 max-w-xl mx-auto">
-            Join thousands of players enjoying JigSolitaire — the most relaxing jigsaw solitaire puzzle game online. 
+            Join thousands of players enjoying JigSolitaire — the most relaxing jigsaw solitaire puzzle game online.
             Start playing instantly, no download required!
           </p>
-          <button 
+          <button
             onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
             className="inline-flex items-center gap-2 px-8 py-4 bg-white text-amber-600 font-bold rounded-full shadow-xl hover:shadow-2xl hover:scale-105 transition-all"
           >
             <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-              <path d="M6.5 5.5v9l7-4.5-7-4.5z"/>
+              <path d="M6.5 5.5v9l7-4.5-7-4.5z" />
             </svg>
             Play JigSolitaire Now — It&apos;s Free
           </button>
