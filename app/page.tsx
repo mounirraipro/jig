@@ -4,6 +4,7 @@ import { useState, useEffect, useCallback, useRef, useMemo, Suspense } from 'rea
 import { useSearchParams, useRouter } from 'next/navigation';
 import { Tile, GameImage, PuzzleSet } from './types/game';
 import { shuffleTiles as shuffleArray } from './utils/imageSplitter';
+import { displaceTimesForGroupPlacement } from './utils/tileDisplacement';
 import { saveLevelProgress, getLastPlayedLevel, setLastPlayedLevel, startPlaySession, savePlaySession, endPlaySession, checkDailyVisit, StreakInfo } from './utils/storage';
 import StreakPopup from './components/StreakPopup';
 import { getSettings } from './utils/settings';
@@ -132,6 +133,11 @@ function GamePageContent() {
     // If a new tile was placed correctly, play click sound
     if (correctCount > previousCount && !isComplete) {
       soundManagerRef.current.playClick();
+    }
+
+    // Check for Win Condition
+    if (tiles.length > 0 && !isComplete && checkWin(tiles)) {
+      handleWin();
     }
 
     previousCorrectCountRef.current = correctCount;
@@ -445,14 +451,23 @@ function GamePageContent() {
     }
   };
 
+  const handleWin = useCallback(() => {
+    setTimeout(() => {
+      setIsComplete(true);
+      soundManagerRef.current.playWin();
+      const stars = calculateStars(timeInSeconds);
+      setEarnedStars(stars);
+      // Save progress if this is a level
+      if (currentLevel !== null && settings.playWithTime) {
+        saveLevelProgress(currentLevel, timeInSeconds);
+      }
+    }, 300);
+  }, [timeInSeconds, currentLevel, settings.playWithTime]);
+
   const swapTiles = (index1: number, index2: number) => {
-    // Don't allow swapping correct tiles
-    const tile1 = tiles[index1];
-    const tile2 = tiles[index2];
-    if ((tile1 && tile1.currentPos === tile1.correctPos) ||
-      (tile2 && tile2.currentPos === tile2.correctPos)) {
-      return;
-    }
+    // Lock check removed as per user request to allow swapping correct tiles
+
+
 
     if (isHardLevel && puzzleSets.length > 0) {
       // Update the current puzzle set
@@ -526,18 +541,28 @@ function GamePageContent() {
     if (isComplete) return;
     if (fromIndex === toIndex) return;
 
-    // Don't allow swapping correct tiles (they're locked/merged)
-    const fromTile = tiles[fromIndex];
-    const toTile = tiles[toIndex];
-    if ((fromTile && fromTile.currentPos === fromTile.correctPos) ||
-      (toTile && toTile.currentPos === toTile.correctPos)) {
-      return;
-    }
-
     setSelectedTile(null);
     setHintedTileId(null);
     swapTiles(fromIndex, toIndex);
     setMoves(prev => prev + 1);
+  };
+
+  const handleGroupDragSwap = (groupIndices: number[], targetPos: number): boolean => {
+    if (isComplete) return false;
+
+    // Use displacement logic to move the group and shift other tiles
+    const newTiles = displaceTimesForGroupPlacement(tiles, groupIndices, targetPos, gridSize);
+
+    // If displacement returned null, it means the move was invalid (out of bounds)
+    if (!newTiles) {
+      return false;
+    }
+
+    setTiles(newTiles);
+    setSelectedTile(null);
+    setHintedTileId(null);
+    setMoves(prev => prev + 1);
+    return true;
   };
 
   const checkWin = (tilesToCheck: Tile[]): boolean => {
@@ -817,6 +842,7 @@ function GamePageContent() {
                   hintedTileId={hintedTileId}
                   onTileClick={handleTileClick}
                   onTileDragSwap={handleTileDragSwap}
+                  onGroupDragSwap={handleGroupDragSwap}
                   compact={isHardLevel}
                   isHardLevel={isHardLevel}
                   tileWidth={tileDimensions.width}

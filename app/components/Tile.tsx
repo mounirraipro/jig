@@ -7,8 +7,15 @@ import {
   useEffect,
   type PointerEvent as ReactPointerEvent,
 } from 'react';
-import gsap from 'gsap';
 import { Tile as TileType, TileMergeDirections, GroupBorderEdges } from '../types/game';
+
+// Dynamic import for GSAP to prevent SSR errors
+let gsap: any = null;
+if (typeof window !== 'undefined') {
+  import('gsap').then(module => {
+    gsap = module.default;
+  });
+}
 
 interface TileProps {
   tile: TileType;
@@ -55,7 +62,7 @@ export default function Tile({
 
   // React to Drag State
   useEffect(() => {
-    if (!tileRef.current) return;
+    if (!tileRef.current || !gsap) return;
 
     if (isDragging) {
       // Lift up
@@ -90,10 +97,12 @@ export default function Tile({
 
   // Magnet / Target Effect
   useEffect(() => {
-    if (!tileRef.current || isDragging) return;
+    if (!tileRef.current || isDragging || !gsap) return;
 
     if (isDragTarget) {
-      gsap.to(tileRef.current, { scale: 0.95, brightness: 1.2, duration: 0.2 });
+      // Scale 1.05 creates slight overlap which visually merges the tiles
+      // and gives the "pop" effect requested without splitting seams
+      gsap.to(tileRef.current, { scale: 1.05, brightness: 1.1, duration: 0.2 });
     } else if (!isHovered && !isSelected) {
       gsap.to(tileRef.current, { scale: 1, brightness: 1, duration: 0.2 });
     }
@@ -105,23 +114,6 @@ export default function Tile({
   // but report to parent for game logic.
 
   const handlePointerDown = (e: ReactPointerEvent<HTMLDivElement>) => {
-    // If tile is locked (correct position), play shake animation and deny drag
-    if (isCorrect) {
-      if (tileRef.current) {
-        gsap.to(tileRef.current, {
-          x: 5,
-          duration: 0.1,
-          yoyo: true,
-          repeat: 5,
-          ease: "sine.inOut",
-          onComplete: () => {
-            gsap.to(tileRef.current, { x: 0, duration: 0.1 });
-          }
-        });
-      }
-      return;
-    }
-
     if (e.button !== 0) return;
     e.preventDefault();
     e.currentTarget.setPointerCapture(e.pointerId);
@@ -197,8 +189,6 @@ export default function Tile({
         background: 'var(--color-surface)',
         outline: isSelected || isHinted ? '2px solid var(--color-primary)' : 'none',
         outlineOffset: '-2px',
-        // Removed pointerEvents: none for isCorrect so it can still be grabbed
-        borderRadius: '8px',
         cursor: isDragging ? 'grabbing' : 'grab',
         overflow: 'hidden',
         // Performance optimization
@@ -222,11 +212,11 @@ export default function Tile({
       )}
 
       {isDragTarget && !isDragging && (
-        <div className="absolute inset-0 bg-amber-400/30 border-2 border-amber-400 pointer-events-none animate-pulse rounded-lg" />
+        <div className="absolute inset-0 bg-amber-400/30 border-2 border-amber-400 pointer-events-none animate-pulse" />
       )}
 
       {isHinted && !isCorrect && (
-        <div className="pointer-events-none absolute inset-0 animate-[pulse_1.6s_ease-in-out_infinite] border-2 border-yellow-400 rounded-lg" />
+        <div className="pointer-events-none absolute inset-0 animate-[pulse_1.6s_ease-in-out_infinite] border-2 border-yellow-400" />
       )}
     </div>
   );

@@ -1,7 +1,15 @@
 import React, { useMemo, useRef, useLayoutEffect, useState, useCallback, useEffect } from 'react';
 import { Tile as TileType } from '../types/game';
 import Tile from './Tile';
-import gsap from 'gsap';
+import { getTileGroup } from '../utils/tileGroups';
+
+// Dynamic import for GSAP to prevent SSR errors
+let gsap: any = null;
+if (typeof window !== 'undefined') {
+    import('gsap').then(module => {
+        gsap = module.default;
+    });
+}
 
 interface PuzzleBoardProps {
     tiles: TileType[];
@@ -13,6 +21,7 @@ interface PuzzleBoardProps {
     hintedTileId: number | null;
     onTileClick: (index: number) => void;
     onTileDragSwap: (fromIndex: number, toIndex: number) => void;
+    onGroupDragSwap?: (groupIndices: number[], targetPos: number) => boolean;
     compact?: boolean;
     isHardLevel?: boolean;
 }
@@ -27,6 +36,7 @@ export default function PuzzleBoard({
     hintedTileId,
     onTileClick,
     onTileDragSwap,
+    onGroupDragSwap,
     isHardLevel = false,
 }: PuzzleBoardProps) {
     const containerRef = useRef<HTMLDivElement>(null);
@@ -35,8 +45,9 @@ export default function PuzzleBoard({
     // State to track dragging
     const [dragState, setDragState] = useState<{
         activeTileId: number | null; // The tile being dragged
+        groupTileIds: number[]; // All tiles in the group (including active tile)
         targetTileIndex: number | null; // The grid index (currentPos) we are hovering over
-    }>({ activeTileId: null, targetTileIndex: null });
+    }>({ activeTileId: null, groupTileIds: [], targetTileIndex: null });
 
     // Constants for Dragging
     const dragStartPos = useRef<{ x: number, y: number }>({ x: 0, y: 0 });
@@ -65,26 +76,44 @@ export default function PuzzleBoard({
     // --- Drag Handlers ---
 
     const handleDragStart = (e: React.PointerEvent, tileId: number) => {
-        setDragState({ activeTileId: tileId, targetTileIndex: null });
+        const tileIndex = tiles.findIndex(t => t.id === tileId);
+
+        // Detect which group this tile belongs to
+        const groupIndices = getTileGroup(tileIndex, tiles, gridSize);
+        const groupTileIds = groupIndices.map(idx => tiles[idx].id);
+
+        setDragState({
+            activeTileId: tileId,
+            groupTileIds: groupTileIds,
+            targetTileIndex: null
+        });
         dragStartPos.current = { x: e.clientX, y: e.clientY };
         dragOffset.current = { x: 0, y: 0 };
 
-        // Ensure the element is ready to be moved visually
-        const el = tilesRef.current[tileId];
-        if (el) gsap.set(el, { zIndex: 100 });
+        // Lift up all tiles in the group
+        if (gsap) {
+            groupTileIds.forEach(id => {
+                const el = tilesRef.current[id];
+                if (el) gsap.set(el, { zIndex: 100 });
+            });
+        }
     };
 
     const handleDragMove = (e: React.PointerEvent) => {
         if (dragState.activeTileId === null || !containerRef.current) return;
 
-        // 1. Move the visual tile
+        // 1. Move all tiles in the group visually
         const dx = e.clientX - dragStartPos.current.x;
         const dy = e.clientY - dragStartPos.current.y;
         dragOffset.current = { x: dx, y: dy };
 
-        const el = tilesRef.current[dragState.activeTileId];
-        if (el) {
-            gsap.set(el, { x: dx, y: dy });
+        if (gsap) {
+            dragState.groupTileIds.forEach(id => {
+                const el = tilesRef.current[id];
+                if (el) {
+                    gsap.set(el, { x: dx, y: dy });
+                }
+            });
         }
 
         // 2. Identify Target Slot
@@ -118,33 +147,49 @@ export default function PuzzleBoard({
     };
 
     const handleDragEnd = () => {
-        const { activeTileId, targetTileIndex } = dragState;
+        const { activeTileId, groupTileIds, targetTileIndex } = dragState;
 
-        if (activeTileId !== null && targetTileIndex !== null) {
-            const fromIndex = tiles.findIndex(t => t.id === activeTileId);
-            const toTile = tiles.find(t => t.currentPos === targetTileIndex);
+        if (activeTileId !== null) {
+            // Check if targetTileIndex is valid (within grid)
+            if (targetTileIndex !== null && targetTileIndex >= 0 && targetTileIndex < gridSize * gridSize) {
+                const fromIndex = tiles.findIndex(t => t.id === activeTileId);
+                const toTile = tiles.find(t => t.currentPos === targetTileIndex);
 
-            if (fromIndex !== -1 && toTile) {
-                // Check if the target tile is already in the correct position (locked)
-                const isTargetLocked = toTile.currentPos === toTile.correctPos;
+                if (fromIndex !== -1 && toTile) {
+                    // If group has multiple tiles and we have a group handler, use it
+                    if (groupTileIds.length > 1 && onGroupDragSwap) {
+                        const groupIndices = groupTileIds.map(id => tiles.findIndex(t => t.id === id));
+                        const success = onGroupDragSwap(groupIndices, targetTileIndex);
 
-                if (isTargetLocked) {
-                    // Invalid Move: Target is locked. Snap back.
-                    const el = tilesRef.current[activeTileId];
-                    if (el) gsap.to(el, { x: 0, y: 0, duration: 0.2, clearProps: "zIndex" });
+                        if (!success) {
+                            snapBackGroup(groupTileIds);
+                        }
+                    } else {
+                        // Single tile swap
+                        const toIndex = tiles.findIndex(t => t.id === toTile.id);
+                        onTileDragSwap(fromIndex, toIndex);
+                    }
                 } else {
-                    const toIndex = tiles.findIndex(t => t.id === toTile.id);
-                    // Perform Swap
-                    onTileDragSwap(fromIndex, toIndex);
+                    // Invalid drop - snap back
+                    snapBackGroup(groupTileIds);
                 }
+            } else {
+                // Dropped outside grid or invalid position - snap back entire group
+                snapBackGroup(groupTileIds);
             }
-        } else if (activeTileId !== null) {
-            // Dropped outside or invalid
-            const el = tilesRef.current[activeTileId];
-            if (el) gsap.to(el, { x: 0, y: 0, duration: 0.2, clearProps: "zIndex" });
         }
 
-        setDragState({ activeTileId: null, targetTileIndex: null });
+        setDragState({ activeTileId: null, groupTileIds: [], targetTileIndex: null });
+    };
+
+    // Helper to snap back group
+    const snapBackGroup = (groupTileIds: number[]) => {
+        if (gsap) {
+            groupTileIds.forEach(id => {
+                const el = tilesRef.current[id];
+                if (el) gsap.to(el, { x: 0, y: 0, duration: 0.2, clearProps: "zIndex,transform" });
+            });
+        }
     };
 
     // --- FLIP & Shuffle Logic ---
@@ -155,6 +200,8 @@ export default function PuzzleBoard({
     const prevTileIdsRef = useRef(tiles.map(t => t.id).sort().join(','));
 
     useLayoutEffect(() => {
+        if (!gsap) return; // Wait for GSAP to load
+
         const ctx = gsap.context(() => {
             const currentTileIds = tiles.map(t => t.id).sort().join(',');
             const hasNewTiles = prevTileIdsRef.current !== currentTileIds;
@@ -174,7 +221,7 @@ export default function PuzzleBoard({
                 prevGridSize.current !== gridSize ||
                 prevImageUrl.current !== imageUrl ||
                 hasNewTiles || // KEY FIX: Different tiles = new puzzle
-                changedTilesCount > 2;
+                changedTilesCount > (tiles.length * 0.8); // Only animate shuffle if MOST tiles moved (e.g. real shuffle)
 
             if (isShuffle) {
                 // --- SHUFFLE ANIMATION ---
@@ -298,7 +345,7 @@ export default function PuzzleBoard({
             {tiles.map((tile, i) => {
                 const style = getGridStyle(tile.currentPos);
                 const isDragTarget = dragState.targetTileIndex === tile.currentPos;
-                const isDragging = dragState.activeTileId === tile.id;
+                const isDragging = dragState.activeTileId === tile.id || dragState.groupTileIds.includes(tile.id);
 
                 return (
                     <div

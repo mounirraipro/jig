@@ -154,7 +154,6 @@ export default function PuzzleGrid({
           isSelected={selectedTile === index}
           isHinted={tile.id === hintedTileId}
           onClick={() => onTileClick(index)}
-          onDragSwap={onTileDragSwap}
           mergeDirections={mergeDirectionsByIndex[index] ?? createEmptyMerge()}
           groupBorderEdges={groupBorderEdges.get(index) ?? { top: false, right: false, bottom: false, left: false }}
           width={tileWidth}
