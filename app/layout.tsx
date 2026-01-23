@@ -6,12 +6,13 @@ const BASE_URL = 'https://jigsolitaire.online';
 export const metadata: Metadata = {
   metadataBase: new URL(BASE_URL),
   title: {
-    default: "JigSolitaire — Play Online Free Jigsaw Solitaire Puzzle Game",
-    template: "%s | JigSolitaire",
+    default: "JigSolitaire | Play Online Free Jigsaw Solitaire Puzzle Game",
+    template: "JigSolitaire | %s",
   },
-  description: "Play JigSolitaire online free — the ultimate jigsaw solitaire puzzle game! No download, mobile friendly, instant puzzle fun. 77+ levels, brain training, relaxing gameplay. Works on all devices.",
+  description: "JigSolitaire: The ultimate free online jigsaw solitaire puzzle game! 77+ levels, no download, mobile friendly, instant fun. Play now!",
   keywords: [
     'jigsolitaire',
+    'jig solitaire',
     'jigsaw solitaire',
     'jigsaw puzzle online',
     'free puzzle game',
@@ -33,8 +34,8 @@ export const metadata: Metadata = {
   applicationName: 'JigSolitaire',
   category: 'Games',
   openGraph: {
-    title: "Play JigSolitaire Online – Free Jigsaw Solitaire Puzzle Game",
-    description: "Play JigSolitaire online free! The ultimate jigsaw solitaire puzzle game with 77+ levels. No download, mobile friendly, instant puzzle fun!",
+    title: "JigSolitaire | Play Free Online Jigsaw Solitaire Puzzle Game",
+    description: "JigSolitaire: The ultimate free online jigsaw solitaire puzzle game! 77+ levels, no download, mobile friendly, instant fun. Play now!",
     url: BASE_URL,
     siteName: 'JigSolitaire',
     type: 'website',
@@ -50,8 +51,8 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: "Play JigSolitaire Online – Free Jigsaw Solitaire Puzzle Game",
-    description: "Play JigSolitaire online free! The ultimate jigsaw solitaire puzzle game. No download, mobile friendly, instant puzzle fun!",
+    title: "JigSolitaire | Play Free Online Jigsaw Solitaire Puzzle Game",
+    description: "JigSolitaire: The ultimate free online jigsaw solitaire puzzle game! 77+ levels, no download, mobile friendly, instant fun. Play now!",
     images: ['/Jigsolitaire.online_Thmbnail.png'],
     creator: '@jigsolitaire',
   },

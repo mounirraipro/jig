@@ -130,7 +130,7 @@ function generateStructuredData() {
     '@context': 'https://schema.org',
     '@type': 'VideoGame',
     name: 'JigSolitaire',
-    description: 'JigSolitaire is a free online jigsaw solitaire puzzle game. Play 77+ beautiful puzzles directly in your browser with no downloads required.',
+    description: 'JigSolitaire: The ultimate free online jigsaw solitaire puzzle game! 77+ levels, no download, mobile friendly, instant fun. Play now!',
     url: BASE_URL,
     image: `${BASE_URL}/Jigsolitaire.online_Thmbnail.png`,
     genre: ['Puzzle', 'Jigsaw', 'Solitaire', 'Casual'],
@@ -200,7 +200,7 @@ function generateStructuredData() {
     name: 'JigSolitaire',
     alternateName: 'Jig Solitaire',
     url: BASE_URL,
-    description: 'Play JigSolitaire online free - the ultimate jigsaw solitaire puzzle game with 77+ levels.',
+    description: 'JigSolitaire: The ultimate free online jigsaw solitaire puzzle game! 77+ levels, no download, mobile friendly, instant fun. Play now!',
     potentialAction: {
       '@type': 'SearchAction',
       target: `${BASE_URL}/?search={search_term_string}`,
@@ -315,7 +315,7 @@ export default function SEOContent() {
                   <path d="M11 4a2 2 0 114 0v1a1 1 0 001 1h3a1 1 0 011 1v3a1 1 0 01-1 1h-1a2 2 0 100 4h1a1 1 0 011 1v3a1 1 0 01-1 1h-3a1 1 0 01-1-1v-1a2 2 0 10-4 0v1a1 1 0 01-1 1H7a1 1 0 01-1-1v-3a1 1 0 00-1-1H4a2 2 0 110-4h1a1 1 0 001-1V7a1 1 0 011-1h3a1 1 0 001-1V4z" />
                 </svg>
               </div>
-              <h3 className="text-xl font-bold text-slate-900 mb-2">Jigsaw Meets Solitaire</h3>
+              <h3 className="text-xl font-bold text-slate-900 mb-2">JigSolitaire: Jigsaw Meets Solitaire</h3>
               <p className="text-slate-600">Unique swap-based mechanics combine the best of both puzzle genres into one addictive game.</p>
             </div>
             <div className="p-6">
@@ -324,7 +324,7 @@ export default function SEOContent() {
                   <path d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
                 </svg>
               </div>
-              <h3 className="text-xl font-bold text-slate-900 mb-2">Brain Training</h3>
+              <h3 className="text-xl font-bold text-slate-900 mb-2">JigSolitaire Brain Training</h3>
               <p className="text-slate-600">Sharpen your spatial reasoning, memory, and problem-solving skills with every puzzle.</p>
             </div>
             <div className="p-6">
@@ -333,7 +333,7 @@ export default function SEOContent() {
                   <path d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
                 </svg>
               </div>
-              <h3 className="text-xl font-bold text-slate-900 mb-2">Relaxing Gameplay</h3>
+              <h3 className="text-xl font-bold text-slate-900 mb-2">JigSolitaire Relaxing Gameplay</h3>
               <p className="text-slate-600">Calming visuals, soothing sounds, and stress-free gameplay for ultimate relaxation.</p>
             </div>
           </div>
@@ -362,7 +362,7 @@ export default function SEOContent() {
                 <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-amber-500 to-orange-500 flex items-center justify-center mb-6 text-white shadow-lg shadow-amber-200">
                   <IconInstant />
                 </div>
-                <h3 className="text-xl font-bold text-slate-900 mb-3">Instant Play — No Downloads</h3>
+                <h3 className="text-xl font-bold text-slate-900 mb-3">JigSolitaire Instant Play</h3>
                 <p className="text-slate-600 leading-relaxed mb-4">
                   Start playing JigSolitaire instantly in your web browser. No app downloads, no sign-ups, no waiting.
                   Works perfectly on desktop, tablet, and mobile devices across all major browsers.
@@ -379,7 +379,7 @@ export default function SEOContent() {
             {[
               {
                 icon: <IconBrain />,
-                title: 'Brain Training & Mental Exercise',
+                title: 'JigSolitaire Brain Training',
                 desc: 'Playing JigSolitaire regularly helps improve memory, concentration, and spatial reasoning. Perfect cognitive exercise for all ages.',
                 gradient: 'from-emerald-50 to-teal-50',
                 border: 'border-emerald-100',
@@ -388,7 +388,7 @@ export default function SEOContent() {
               },
               {
                 icon: <IconMobile />,
-                title: 'Mobile Optimized Experience',
+                title: 'JigSolitaire Mobile Experience',
                 desc: 'JigSolitaire is fully optimized for touch screens. Play on your iPhone, iPad, Android phone, or tablet with smooth, responsive controls.',
                 gradient: 'from-pink-50 to-rose-50',
                 border: 'border-pink-100',
@@ -397,7 +397,7 @@ export default function SEOContent() {
               },
               {
                 icon: <IconFree />,
-                title: '100% Free Forever',
+                title: 'JigSolitaire is Free Forever',
                 desc: 'JigSolitaire is completely free to play. No hidden fees, no premium tiers, no pay-to-win. Just pure puzzle enjoyment.',
                 gradient: 'from-blue-50 to-indigo-50',
                 border: 'border-blue-100',
@@ -406,7 +406,7 @@ export default function SEOContent() {
               },
               {
                 icon: <IconProgress />,
-                title: 'Save Progress Automatically',
+                title: 'JigSolitaire Saves Progress',
                 desc: 'Your JigSolitaire progress saves automatically. Earn stars, complete levels, and pick up exactly where you left off anytime.',
                 gradient: 'from-violet-50 to-purple-50',
                 border: 'border-violet-100',
