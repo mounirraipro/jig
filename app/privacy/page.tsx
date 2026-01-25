@@ -2,14 +2,14 @@ import { Metadata } from 'next';
 import ContentPageLayout from '../components/ContentPageLayout';
 
 export const metadata: Metadata = {
-  title: 'Privacy Policy | JigSolitaire - Free Online Puzzle Game',
+  title: 'JigSolitaire | Privacy Policy - Free Online Puzzle Game',
   description: 'Read the Privacy Policy for JigSolitaire. Learn how we collect, use, and protect your information when you play our free online puzzle game.',
   keywords: ['privacy policy', 'jigsolitaire privacy', 'data protection', 'user privacy', 'online game privacy'],
   alternates: {
     canonical: 'https://jigsolitaire.online/privacy',
   },
   openGraph: {
-    title: 'Privacy Policy | JigSolitaire',
+    title: 'JigSolitaire | Privacy Policy',
     description: 'Read the Privacy Policy for JigSolitaire.',
     images: ['/Jigsolitaire.online_Thmbnail.png'],
   },
@@ -48,19 +48,31 @@ export default function PrivacyPage() {
 
       <h2>Cookies Used by JigSolitaire</h2>
 
-      <p><strong>JigSolitaire</strong> uses cookies and similar technologies to improve user experience. Cookies are small files stored on your device that help websites remember basic information.</p>
+      <p><strong>JigSolitaire</strong> uses cookies and similar technologies to improve user experience and support our advertising services. Cookies are small files stored on your device that help websites remember basic information.</p>
 
-      <p>On <strong>jigsolitaire.online</strong>, cookies may be used to remember preferences, measure website performance, and understand how visitors move around the site.</p>
+      <p>On <strong>jigsolitaire.online</strong>, cookies may be used to remember preferences, measure website performance, understand how visitors move around the site, and display relevant advertisements through Google AdSense.</p>
 
-      <p>You can choose to disable cookies at any time through your browser settings. Please note that disabling cookies may affect how <strong>JigSolitaire</strong> functions.</p>
+      <p>When you first visit <strong>JigSolitaire</strong>, you will see a cookie consent banner. You can choose to accept or decline non-essential cookies (such as advertising cookies). Your choice is saved in your browser's local storage.</p>
 
-      <p>Cookies used by <strong>JigSolitaire</strong> do not store personal information such as names or contact details.</p>
+      <p>You can also disable cookies at any time through your browser settings. Please note that disabling cookies may affect how <strong>JigSolitaire</strong> functions and may prevent ads from displaying properly.</p>
+
+      <p>Essential cookies used by <strong>JigSolitaire</strong> do not store personal information such as names or contact details.</p>
 
       <h2>Third-Party Services Used by JigSolitaire</h2>
 
-      <p>To keep <strong>JigSolitaire</strong> running smoothly, we may use trusted third-party services. These services help us analyze traffic, host the website, and deliver content faster.</p>
+      <p>To keep <strong>JigSolitaire</strong> running smoothly and support our free service, we use trusted third-party services. These services help us analyze traffic, host the website, deliver content faster, and display advertisements.</p>
 
-      <p>Examples of third-party services used by <strong>JigSolitaire</strong> include analytics tools like Google Analytics and hosting providers. These services may collect technical information similar to what we collect.</p>
+      <h3>Advertising Services</h3>
+
+      <p><strong>JigSolitaire</strong> uses <strong>Google AdSense</strong> to display advertisements on the website. Google AdSense is a third-party advertising service provided by Google LLC.</p>
+
+      <p>When you visit <strong>JigSolitaire</strong>, AdSense may collect information such as your IP address, browser type, device type, and general location to show you relevant ads. AdSense also uses cookies and similar technologies to remember your ad preferences and measure ad performance.</p>
+
+      <p>You can learn more about how Google uses data by visiting <a href="https://policies.google.com/privacy" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--color-accent)', textDecoration: 'underline' }}>Google's Privacy Policy</a>. You can also opt out of personalized advertising by visiting <a href="https://www.google.com/settings/ads" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--color-accent)', textDecoration: 'underline' }}>Google Ads Settings</a>.</p>
+
+      <h3>Other Services</h3>
+
+      <p>Examples of other third-party services used by <strong>JigSolitaire</strong> may include hosting providers and content delivery networks. These services may collect technical information similar to what we collect.</p>
 
       <p>Each third-party service has its own privacy policy. We recommend reviewing those policies to understand how they handle data.</p>
 

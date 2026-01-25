@@ -2,14 +2,14 @@ import { Metadata } from 'next';
 import ContentPageLayout from '../components/ContentPageLayout';
 
 export const metadata: Metadata = {
-  title: 'About Us | JigSolitaire - Free Online Puzzle Game',
+  title: 'JigSolitaire | About Us - Free Online Puzzle Game',
   description: 'Learn about JigSolitaire, the free online jigsaw puzzle game. Our mission is to make puzzle gaming simple, safe, and enjoyable for players of all ages.',
   keywords: ['about jigsolitaire', 'puzzle game', 'free online puzzles', 'jigsaw game', 'about us'],
   alternates: {
     canonical: 'https://jigsolitaire.online/about',
   },
   openGraph: {
-    title: 'About Us | JigSolitaire',
+    title: 'JigSolitaire | About Us',
     description: 'Learn about JigSolitaire, the free online jigsaw puzzle game.',
     images: ['/Jigsolitaire.online_Thmbnail.png'],
   },
@@ -23,6 +23,16 @@ export default function AboutPage() {
       <p>Welcome to <strong>jigsolitaire.online</strong>, a website fully dedicated to the game <strong>JigSolitaire</strong>. Our platform was created with one clear idea in mind: to make <strong>JigSolitaire</strong> easy, fun, and accessible for everyone, directly from a web browser. No downloads, no installations, and no complicated steps are required. You can start playing <strong>JigSolitaire</strong> instantly.</p>
 
       <p>We believe that online games should be simple, safe, and enjoyable for all ages. That is why <strong>JigSolitaire</strong> is designed to be understandable even for children, while still being entertaining for adults. Our goal is to create a relaxing space where players can enjoy a classic-style puzzle card game at their own pace.</p>
+
+      <h2>Who We Are</h2>
+
+      <p><strong>Business Name:</strong> JigSolitaire</p>
+      <p><strong>Location:</strong> United States</p>
+      <p><strong>Established:</strong> 2025</p>
+
+      <p><strong>JigSolitaire</strong> is operated by a dedicated team committed to providing high-quality, family-friendly online gaming experiences. We focus on creating simple, accessible games that players of all ages can enjoy without barriers.</p>
+
+      <p>Our team is based in the United States and follows all applicable laws and regulations regarding online gaming, privacy, and data protection. We are committed to transparency, user safety, and delivering exceptional gaming experiences.</p>
 
       <h2>Our Mission with JigSolitaire</h2>
 

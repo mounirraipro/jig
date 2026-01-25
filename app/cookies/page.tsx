@@ -2,14 +2,14 @@ import { Metadata } from 'next';
 import ContentPageLayout from '../components/ContentPageLayout';
 
 export const metadata: Metadata = {
-  title: 'Cookies Policy | JigSolitaire - Free Online Puzzle Game',
+  title: 'JigSolitaire | Cookies Policy - Free Online Puzzle Game',
   description: 'Learn about how JigSolitaire uses cookies and similar technologies. Understand your options for managing cookies while playing our free online puzzle game.',
   keywords: ['cookies policy', 'jigsolitaire cookies', 'website cookies', 'privacy', 'browser cookies'],
   alternates: {
     canonical: 'https://jigsolitaire.online/cookies',
   },
   openGraph: {
-    title: 'Cookies Policy | JigSolitaire',
+    title: 'JigSolitaire | Cookies Policy',
     description: 'Learn about how JigSolitaire uses cookies.',
     images: ['/Jigsolitaire.online_Thmbnail.png'],
   },
@@ -70,11 +70,15 @@ export default function CookiesPage() {
 
       <h2>Advertising Cookies and JigSolitaire</h2>
 
-      <p>At this time, <strong>JigSolitaire</strong> does not use advertising or targeting cookies. We focus on providing a simple and distraction-free gaming experience.</p>
+      <p><strong>JigSolitaire</strong> uses advertising cookies through <strong>Google AdSense</strong> to display relevant advertisements and support our free service.</p>
 
-      <p>If advertising cookies are ever introduced on <strong>JigSolitaire</strong>, this Cookies Policy will be updated clearly, and users will be informed in advance.</p>
+      <p>Google AdSense uses cookies to show you ads based on your interests and previous visits to websites. These cookies help make ads more relevant to you and measure ad performance.</p>
 
-      <p>Our priority remains a clean, safe, and enjoyable environment for all players.</p>
+      <p>When you first visit <strong>JigSolitaire</strong>, you will see a cookie consent banner where you can accept or decline advertising cookies. If you decline, ads may still appear but will not be personalized based on your browsing activity.</p>
+
+      <p>You can manage your Google ad preferences at any time by visiting <a href="https://www.google.com/settings/ads" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--color-accent)', textDecoration: 'underline' }}>Google Ads Settings</a>.</p>
+
+      <p>Our priority is to maintain a clean and safe environment for all players while supporting the free availability of <strong>JigSolitaire</strong> through responsible advertising.</p>
 
       <h2>Third-Party Cookies Used with JigSolitaire</h2>
 

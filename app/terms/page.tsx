@@ -2,14 +2,14 @@ import { Metadata } from 'next';
 import ContentPageLayout from '../components/ContentPageLayout';
 
 export const metadata: Metadata = {
-  title: 'Terms of Service | JigSolitaire - Free Online Puzzle Game',
+  title: 'JigSolitaire | Terms of Service - Free Online Puzzle Game',
   description: 'Read the Terms of Service for JigSolitaire. Understand the rules and conditions for using our free online puzzle game website.',
   keywords: ['terms of service', 'jigsolitaire terms', 'user agreement', 'terms and conditions', 'game rules'],
   alternates: {
     canonical: 'https://jigsolitaire.online/terms',
   },
   openGraph: {
-    title: 'Terms of Service | JigSolitaire',
+    title: 'JigSolitaire | Terms of Service',
     description: 'Read the Terms of Service for JigSolitaire.',
     images: ['/Jigsolitaire.online_Thmbnail.png'],
   },

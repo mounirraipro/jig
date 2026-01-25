@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
+import Script from "next/script";
 import "./globals.css";
+import CookieConsent from "./components/CookieConsent";
 
 const BASE_URL = 'https://jigsolitaire.online';
 
@@ -28,7 +30,7 @@ export const metadata: Metadata = {
     'unblocked puzzle game',
     'casual puzzle',
   ],
-  authors: [{ name: 'JigSolitaire' }],
+  authors: [{ name: 'JigSolitaire Team' }],
   creator: 'JigSolitaire',
   publisher: 'JigSolitaire',
   applicationName: 'JigSolitaire',
@@ -83,8 +85,18 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
+      <head>
+        {/* Google AdSense */}
+        <Script
+          async
+          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1032974487169355"
+          crossOrigin="anonymous"
+          strategy="afterInteractive"
+        />
+      </head>
       <body className="antialiased">
         {children}
+        <CookieConsent />
       </body>
     </html>
   );

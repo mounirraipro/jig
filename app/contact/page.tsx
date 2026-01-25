@@ -2,14 +2,14 @@ import { Metadata } from 'next';
 import ContentPageLayout from '../components/ContentPageLayout';
 
 export const metadata: Metadata = {
-  title: 'Contact Us | JigSolitaire - Free Online Puzzle Game',
+  title: 'JigSolitaire | Contact Us - Free Online Puzzle Game',
   description: 'Contact the JigSolitaire team for support, feedback, or inquiries. We are here to help you with any questions about our free online puzzle game.',
   keywords: ['contact jigsolitaire', 'support', 'feedback', 'help', 'customer service', 'puzzle game support'],
   alternates: {
     canonical: 'https://jigsolitaire.online/contact',
   },
   openGraph: {
-    title: 'Contact Us | JigSolitaire',
+    title: 'JigSolitaire | Contact Us',
     description: 'Contact the JigSolitaire team for support, feedback, or inquiries.',
     images: ['/Jigsolitaire.online_Thmbnail.png'],
   },
@@ -28,7 +28,13 @@ export default function ContactPage() {
 
       <p>If you have general questions about <strong>JigSolitaire</strong>, the website <strong>jigsolitaire.online</strong>, or how the game works, you can contact us directly by email.</p>
 
-      <p><strong>Email:</strong> contact@jigsolitaire.online</p>
+      <h3>Contact Information</h3>
+
+      <p><strong>Email:</strong> <a href="mailto:contact@jigsolitaire.online" style={{ color: 'var(--color-accent)', textDecoration: 'underline' }}>contact@jigsolitaire.online</a></p>
+
+      <p><strong>Business Name:</strong> JigSolitaire</p>
+
+      <p><strong>Location:</strong> United States</p>
 
       <p>General inquiries may include questions about gameplay access, browser compatibility, website navigation, or general feedback about your experience with <strong>JigSolitaire</strong>.</p>
 

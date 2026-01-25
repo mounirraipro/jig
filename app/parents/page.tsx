@@ -2,14 +2,14 @@ import { Metadata } from 'next';
 import ContentPageLayout from '../components/ContentPageLayout';
 
 export const metadata: Metadata = {
-  title: 'Information for Parents & Guardians | JigSolitaire - Free Online Puzzle Game',
+  title: 'JigSolitaire | Information for Parents & Guardians - Free Online Puzzle Game',
   description: 'Information for parents and guardians about JigSolitaire. Learn about child safety, privacy, content appropriateness, and healthy gaming habits.',
   keywords: ['parents guide', 'child safety', 'jigsolitaire parents', 'family friendly game', 'kids puzzle game', 'parental guidance'],
   alternates: {
     canonical: 'https://jigsolitaire.online/parents',
   },
   openGraph: {
-    title: 'Information for Parents & Guardians | JigSolitaire',
+    title: 'JigSolitaire | Information for Parents & Guardians',
     description: 'Information for parents and guardians about JigSolitaire.',
     images: ['/Jigsolitaire.online_Thmbnail.png'],
   },

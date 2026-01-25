@@ -18,6 +18,7 @@ import LevelSelector from './components/LevelSelector';
 import Confetti from './components/Confetti';
 import SEOContent from './components/SEOContent';
 import MiniPlayer from './components/MiniPlayer';
+import AdUnit from './components/AdUnit';
 
 // Calculate stars from time
 function calculateStars(timeInSeconds: number): number {
@@ -1006,6 +1007,50 @@ function GamePageContent() {
 
       {/* SEO Content Section - Below the fold */}
       <SEOContent />
+
+      {/* Advertisement Section - Below the fold, non-intrusive */}
+      <div style={{ background: 'var(--color-surface)', padding: '2rem 1rem' }}>
+        <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
+          {/* Horizontal Display Ad */}
+          <div style={{ marginBottom: '2rem' }}>
+            <div style={{
+              textAlign: 'center',
+              fontSize: '0.75rem',
+              color: '#9ca3af',
+              marginBottom: '0.5rem',
+              textTransform: 'uppercase',
+              letterSpacing: '0.05em'
+            }}>
+              Advertisement
+            </div>
+            <AdUnit
+              adSlot="1234567890"
+              adFormat="horizontal"
+              className="mx-auto"
+              adStyle={{ display: 'block', maxWidth: '970px', margin: '0 auto' }}
+            />
+          </div>
+
+          {/* Responsive Display Ad - Mobile/Desktop adaptive */}
+          <div style={{ marginTop: '2rem' }}>
+            <div style={{
+              textAlign: 'center',
+              fontSize: '0.75rem',
+              color: '#9ca3af',
+              marginBottom: '0.5rem',
+              textTransform: 'uppercase',
+              letterSpacing: '0.05em'
+            }}>
+              Advertisement
+            </div>
+            <AdUnit
+              adSlot="0987654321"
+              adFormat="auto"
+              adStyle={{ display: 'block', minHeight: '250px' }}
+            />
+          </div>
+        </div>
+      </div>
     </div>
   );
 }
