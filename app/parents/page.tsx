@@ -2,15 +2,15 @@ import { Metadata } from 'next';
 import ContentPageLayout from '../components/ContentPageLayout';
 
 export const metadata: Metadata = {
-  title: 'JigSolitaire | Information for Parents & Guardians - Free Online Puzzle Game',
-  description: 'Information for parents and guardians about JigSolitaire. Learn about child safety, privacy, content appropriateness, and healthy gaming habits.',
+  title: 'jigsolitaire | Information for Parents & Guardians',
+  description: 'Information for parents and guardians about jigsolitaire. Learn about child safety, privacy, content appropriateness, and healthy gaming habits.',
   keywords: ['parents guide', 'child safety', 'jigsolitaire parents', 'family friendly game', 'kids puzzle game', 'parental guidance'],
   alternates: {
     canonical: 'https://jigsolitaire.online/parents',
   },
   openGraph: {
-    title: 'JigSolitaire | Information for Parents & Guardians',
-    description: 'Information for parents and guardians about JigSolitaire.',
+    title: 'jigsolitaire | Information for Parents & Guardians',
+    description: 'Information for parents and guardians about jigsolitaire.',
     images: ['/Jigsolitaire.online_Thmbnail.png'],
   },
 };
@@ -18,128 +18,104 @@ export const metadata: Metadata = {
 export default function ParentsPage() {
   return (
     <ContentPageLayout title="Information for Parents & Guardians">
-      <h2>Information for Parents and Guardians about JigSolitaire</h2>
+      <div className="prose prose-slate max-w-none">
+        <p className="text-xl text-slate-700 mb-8 leading-relaxed">
+          Welcome to this information page created especially for parents and guardians. We understand how important it is for families to feel confident and informed about children's online activities.
+        </p>
 
-      <p>Welcome to this information page created especially for parents and guardians of children who play <strong>JigSolitaire</strong> on <strong>jigsolitaire.online</strong>. We understand how important it is for families to feel confident and informed about the online activities of their children. This page explains how <strong>JigSolitaire</strong> works, how we protect young players, and how parents can help create a safe and healthy gaming experience.</p>
+        <h2 className="text-2xl font-bold text-slate-900 mt-8 mb-4">Platform Overview</h2>
+        <p className="mb-6">
+          This is a browser-based game that runs directly on the website. This means there is no need to download software, install apps, or create accounts. Children can play instantly using a standard web browser on computers, tablets, and smartphones.
+        </p>
+        <p className="mb-6">
+          Because the game runs entirely in the browser, parents do not need to worry about hidden files, unknown programs, or system changes on family devices.
+        </p>
 
-      <p><strong>JigSolitaire</strong> is designed to be simple, calm, and family-friendly. Our goal is to provide a safe place where children and adults can enjoy a relaxing puzzle-style game without unnecessary risks or complications.</p>
+        <h2 className="text-2xl font-bold text-slate-900 mt-8 mb-4">Child Safety and Privacy</h2>
+        <p className="mb-6">
+          Child safety is a top priority. The platform has been built in a way that limits risks and avoids unnecessary data collection.
+        </p>
+        <p className="mb-4">Key safety features:</p>
+        <ul className="mb-6 space-y-2">
+          <li>No registration or login required</li>
+          <li>Children are never asked to provide names, email addresses, phone numbers, or passwords</li>
+          <li>No chat features, comment sections, or social tools</li>
+          <li>No communication with strangers possible through the game</li>
+          <li>No precise location tracking or personal profile collection</li>
+        </ul>
 
-      <h2>Platform Overview of JigSolitaire</h2>
+        <h2 className="text-2xl font-bold text-slate-900 mt-8 mb-4">COPPA Compliance</h2>
+        <p className="mb-6">
+          We follow the principles of the Children's Online Privacy Protection Act (COPPA). We do not knowingly collect personal information from children under the age of 13.
+        </p>
+        <p className="mb-6">
+          Because no accounts or personal details are required, the design naturally limits the collection of sensitive data. This helps keep children protected while playing. Parents who want more details about data handling can review the Privacy Policy.
+        </p>
 
-      <p><strong>JigSolitaire</strong> is a browser-based game that runs directly on the website <strong>jigsolitaire.online</strong>. This means there is no need to download software, install apps, or create accounts. Children can play <strong>JigSolitaire</strong> instantly using a standard web browser.</p>
+        <h2 className="text-2xl font-bold text-slate-900 mt-8 mb-4">Content Appropriateness</h2>
+        <p className="mb-6">
+          The content is created to be suitable for all ages. The game focuses on calm gameplay, simple visuals, and logical thinking. It does not include violence, scary images, strong language, or adult themes. The design is clean and friendly, making it comfortable for younger players.
+        </p>
+        <p className="mb-6">
+          There is no user-generated content, which means children will not see messages, uploads, or comments from other users. We still encourage parents to supervise younger children and explore the game together the first time.
+        </p>
 
-      <p>Because <strong>JigSolitaire</strong> runs entirely in the browser, parents do not need to worry about hidden files, unknown programs, or system changes on family devices. The game works on computers, tablets, and smartphones.</p>
+        <h2 className="text-2xl font-bold text-slate-900 mt-8 mb-4">Educational Benefits</h2>
+        <p className="mb-6">
+          When used in a balanced way, puzzle games can offer educational and developmental benefits for children. Playing can help improve problem-solving skills, as children learn to think ahead, recognize patterns, and make decisions.
+        </p>
+        <p className="mb-6">
+          The game also supports focus and concentration. Completing a puzzle encourages patience and attention to detail. These skills can be helpful in school activities and everyday learning.
+        </p>
 
-      <p>This simple structure makes <strong>JigSolitaire</strong> easy to access while remaining safe and controlled.</p>
+        <h2 className="text-2xl font-bold text-slate-900 mt-8 mb-4">Screen Time Guidelines</h2>
+        <p className="mb-6">
+          While the game is designed to be safe and calm, it is important to balance screen time with other activities. Health experts recommend that young children spend limited time on screens and engage in physical play, reading, and social interaction.
+        </p>
+        <p className="mb-6">
+          For children aged 2 to 5, screen time should be limited to about one hour per day. For older children, parents should set consistent rules that include breaks and offline activities. Online games work best as part of a balanced daily routine.
+        </p>
 
-      <h2>Child Safety and Privacy on JigSolitaire</h2>
+        <h2 className="text-2xl font-bold text-slate-900 mt-8 mb-4">Healthy Gaming Habits</h2>
+        <p className="mb-4">Parents can help children build healthy habits:</p>
+        <ul className="mb-6 space-y-2">
+          <li>Encourage children to take short breaks every hour</li>
+          <li>Make sure they sit comfortably and keep a safe distance from the screen</li>
+          <li>Ensure they play in a well-lit room</li>
+          <li>Set specific times for playing, such as after homework or chores are completed</li>
+        </ul>
+        <p className="mb-6">These habits help keep gaming fun and healthy.</p>
 
-      <p>Child safety is a top priority for <strong>JigSolitaire</strong>. We have built the platform in a way that limits risks and avoids unnecessary data collection.</p>
+        <h2 className="text-2xl font-bold text-slate-900 mt-8 mb-4">Parental Controls</h2>
+        <p className="mb-6">
+          While the game does not include built-in parental control tools, parents can use controls available on browsers and devices. Most web browsers allow parents to block certain websites, limit browsing time, and enable safe search options.
+        </p>
+        <p className="mb-6">
+          Devices such as tablets, smartphones, and computers often include parental control features that help manage how long children can use the internet.
+        </p>
 
-      <p><strong>JigSolitaire</strong> does not require registration or login. Children are never asked to provide names, email addresses, phone numbers, or passwords in order to play.</p>
+        <h2 className="text-2xl font-bold text-slate-900 mt-8 mb-4">Device and Technical Requirements</h2>
+        <p className="mb-6">
+          The game works on most modern devices and browsers. It is compatible with Chrome, Firefox, Safari, Edge, and other popular browsers. The game does not require plugins or special software. A stable internet connection is enough to play smoothly.
+        </p>
 
-      <p>There are no chat features, comment sections, or social tools on <strong>JigSolitaire</strong>. This means children cannot communicate with strangers through the game.</p>
+        <h2 className="text-2xl font-bold text-slate-900 mt-8 mb-4">Reporting Concerns</h2>
+        <p className="mb-6">
+          If parents or guardians notice anything concerning, we encourage them to contact us. When reporting an issue, it helps to include details such as what happened, when it occurred, and which page was involved. We take all reports seriously and aim to resolve concerns as quickly as possible.
+        </p>
 
-      <p>We also do not track precise locations or collect personal profiles. All data use is minimal and focused only on keeping the website working properly.</p>
+        <h2 className="text-2xl font-bold text-slate-900 mt-8 mb-4">Questions and Support</h2>
+        <p className="mb-6">
+          We value feedback from parents and guardians. Your questions and suggestions help us improve the platform. If you need help or have concerns about child safety, privacy, or content, please contact us through the contact page.
+        </p>
 
-      <h2>COPPA Compliance and JigSolitaire</h2>
+        <p className="mb-2"><strong>Email:</strong> <a href="mailto:contact@jigsolitaire.online" className="text-amber-600 hover:text-amber-700 underline">contact@jigsolitaire.online</a></p>
 
-      <p><strong>JigSolitaire</strong> follows the principles of the Children&apos;s Online Privacy Protection Act (COPPA). We do not knowingly collect personal information from children under the age of 13.</p>
-
-      <p>Because <strong>JigSolitaire</strong> does not require accounts or personal details, it naturally limits the collection of sensitive data. This design helps keep children protected while playing.</p>
-
-      <p>Parents who want more details about data handling can review the Privacy Policy available on <strong>jigsolitaire.online</strong>.</p>
-
-      <h2>Content Appropriateness of JigSolitaire</h2>
-
-      <p>The content on <strong>JigSolitaire</strong> is created to be suitable for all ages. The game focuses on calm gameplay, simple visuals, and logical thinking.</p>
-
-      <p><strong>JigSolitaire</strong> does not include violence, scary images, strong language, or adult themes. The design is clean and friendly, making it comfortable for younger players.</p>
-
-      <p>There is no user-generated content on <strong>JigSolitaire</strong>, which means children will not see messages, uploads, or comments from other users.</p>
-
-      <p>We still encourage parents to supervise younger children and explore <strong>JigSolitaire</strong> together the first time.</p>
-
-      <h2>Educational Benefits of JigSolitaire</h2>
-
-      <p>When used in a balanced way, <strong>JigSolitaire</strong> can offer educational and developmental benefits for children.</p>
-
-      <p>Playing <strong>JigSolitaire</strong> can help improve problem-solving skills. Children learn to think ahead, recognize patterns, and make decisions.</p>
-
-      <p>The game also supports focus and concentration. Completing a puzzle in <strong>JigSolitaire</strong> encourages patience and attention to detail.</p>
-
-      <p>These skills can be helpful in school activities and everyday learning.</p>
-
-      <h2>Screen Time Guidelines for JigSolitaire</h2>
-
-      <p>While <strong>JigSolitaire</strong> is designed to be safe and calm, it is important to balance screen time with other activities.</p>
-
-      <p>Health experts recommend that young children spend limited time on screens and engage in physical play, reading, and social interaction.</p>
-
-      <p>For children aged 2 to 5, screen time should be limited to about one hour per day. For older children, parents should set consistent rules that include breaks and offline activities.</p>
-
-      <p><strong>JigSolitaire</strong> works best as part of a balanced daily routine.</p>
-
-      <h2>Healthy Gaming Habits with JigSolitaire</h2>
-
-      <p>Parents can help children build healthy habits while playing <strong>JigSolitaire</strong>.</p>
-
-      <p>Encourage children to take short breaks every hour. Make sure they sit comfortably, keep a safe distance from the screen, and play in a well-lit room.</p>
-
-      <p>It is also helpful to set specific times for playing <strong>JigSolitaire</strong>, such as after homework or chores are completed.</p>
-
-      <p>These habits help keep gaming fun and healthy.</p>
-
-      <h2>Parental Controls for JigSolitaire</h2>
-
-      <p><strong>JigSolitaire</strong> does not include built-in parental control tools, but parents can use controls available on browsers and devices.</p>
-
-      <p>Most web browsers allow parents to block certain websites, limit browsing time, and enable safe search options.</p>
-
-      <p>Devices such as tablets, smartphones, and computers often include parental control features that help manage how long children can use the internet.</p>
-
-      <p>Using these tools alongside <strong>JigSolitaire</strong> provides additional peace of mind.</p>
-
-      <h2>Device and Technical Requirements for JigSolitaire</h2>
-
-      <p><strong>JigSolitaire</strong> works on most modern devices and browsers. It is compatible with Chrome, Firefox, Safari, Edge, and other popular browsers.</p>
-
-      <p>The game does not require plugins or special software. A stable internet connection is enough to play <strong>JigSolitaire</strong> smoothly.</p>
-
-      <p>This simplicity makes <strong>JigSolitaire</strong> easy to use in family environments.</p>
-
-      <h2>Third-Party Content and JigSolitaire</h2>
-
-      <p>Some technical services used by <strong>JigSolitaire</strong>, such as hosting or analytics tools, may come from trusted third-party providers.</p>
-
-      <p>These services help the website load faster and remain reliable. They do not introduce social features or communication tools.</p>
-
-      <p>Parents should remind children not to click on unknown links if any appear and to stay within the main <strong>JigSolitaire</strong> game area.</p>
-
-      <h2>Reporting Concerns about JigSolitaire</h2>
-
-      <p>If parents or guardians notice anything concerning on <strong>JigSolitaire</strong>, we encourage them to contact us.</p>
-
-      <p>When reporting an issue, it helps to include details such as what happened, when it occurred, and which page was involved.</p>
-
-      <p>We take all reports seriously and aim to resolve concerns as quickly as possible.</p>
-
-      <h2>Questions and Support for JigSolitaire Families</h2>
-
-      <p>We value feedback from parents and guardians who use <strong>JigSolitaire</strong>. Your questions and suggestions help us improve the platform.</p>
-
-      <p>If you need help or have concerns about child safety, privacy, or content, please contact us through the contact page on <strong>jigsolitaire.online</strong>.</p>
-
-      <p>We are committed to making <strong>JigSolitaire</strong> a safe, enjoyable, and trustworthy game for families.</p>
-
-      <h2>Final Message to Parents about JigSolitaire</h2>
-
-      <p>Thank you for taking the time to learn more about <strong>JigSolitaire</strong>. We believe that open communication with parents and guardians is essential.</p>
-
-      <p><strong>JigSolitaire</strong> is designed to be simple, calm, and suitable for all ages. With proper guidance and balance, it can be a positive part of your child&apos;s online experience.</p>
-
-      <p>We appreciate your trust and hope <strong>JigSolitaire</strong> brings enjoyable and safe moments to your family.</p>
+        <div className="mt-8 pt-6 border-t border-slate-200 text-sm text-slate-500">
+          <p><strong>HikariTech</strong> (S.a.r.l) - Casablanca, Morocco</p>
+          <p>RC 329153 Casablanca | ICE 001706002000045</p>
+        </div>
+      </div>
     </ContentPageLayout>
   );
 }
-

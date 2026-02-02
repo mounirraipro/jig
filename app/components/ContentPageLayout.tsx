@@ -47,9 +47,9 @@ export default function ContentPageLayout({ title, children }: ContentPageLayout
               backgroundImage: `linear-gradient(#000 1px, transparent 1px),
                                linear-gradient(90deg, #000 1px, transparent 1px)`,
               backgroundSize: '40px 40px'
-            }}/>
+            }} />
           </div>
-          
+
           <div className="relative max-w-4xl mx-auto px-6">
             {/* Breadcrumb */}
             <nav className="flex items-center gap-2 text-sm text-slate-500 mb-6">
@@ -67,7 +67,7 @@ export default function ContentPageLayout({ title, children }: ContentPageLayout
         {/* Content */}
         <div className="py-12 lg:py-16">
           <div className="max-w-4xl mx-auto px-6">
-            <div 
+            <div
               className="prose prose-slate prose-lg max-w-none
                 prose-headings:font-bold prose-headings:tracking-tight
                 prose-h2:text-2xl prose-h2:mt-10 prose-h2:mb-4
@@ -86,9 +86,9 @@ export default function ContentPageLayout({ title, children }: ContentPageLayout
             <div className="absolute inset-0" style={{
               backgroundImage: 'radial-gradient(circle, white 1px, transparent 1px)',
               backgroundSize: '24px 24px'
-            }}/>
+            }} />
           </div>
-          
+
           <div className="relative max-w-3xl mx-auto px-6 text-center">
             <h2 className="text-2xl md:text-3xl font-bold text-white mb-4">
               Ready to Play JigSolitaire?
@@ -96,12 +96,12 @@ export default function ContentPageLayout({ title, children }: ContentPageLayout
             <p className="text-lg text-amber-100 mb-6 max-w-xl mx-auto">
               Enjoy free online jigsaw puzzles with no downloads and no sign-ups required.
             </p>
-            <Link 
+            <Link
               href="/"
               className="inline-flex items-center gap-2 px-8 py-4 bg-white text-amber-600 font-bold rounded-full shadow-xl hover:shadow-2xl hover:scale-105 transition-all"
             >
               <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-                <path d="M6.5 5.5v9l7-4.5-7-4.5z"/>
+                <path d="M6.5 5.5v9l7-4.5-7-4.5z" />
               </svg>
               Play Now — It&apos;s Free
             </Link>
@@ -112,16 +112,19 @@ export default function ContentPageLayout({ title, children }: ContentPageLayout
       {/* Footer */}
       <footer className="py-8 border-t border-slate-200 bg-white">
         <div className="max-w-4xl mx-auto px-6">
-          <div className="flex flex-col md:flex-row items-center justify-between gap-4 text-slate-500 text-sm">
-            <p>&copy; {new Date().getFullYear()} JigSolitaire. All rights reserved.</p>
+          <div className="flex flex-col md:flex-row items-center justify-between gap-4 text-slate-500 text-sm mb-6">
+            <p>&copy; {new Date().getFullYear()} jigsolitaire. All rights reserved.</p>
             <div className="flex flex-wrap justify-center gap-4 md:gap-6">
               <Link href="/about" className="hover:text-slate-700 transition-colors">About</Link>
-              <Link href="/privacy" className="hover:text-slate-700 transition-colors">Privacy</Link>
+              <Link href="/privacy-policy" className="hover:text-slate-700 transition-colors">Privacy</Link>
               <Link href="/terms" className="hover:text-slate-700 transition-colors">Terms</Link>
               <Link href="/cookies" className="hover:text-slate-700 transition-colors">Cookies</Link>
               <Link href="/parents" className="hover:text-slate-700 transition-colors">Parents</Link>
               <Link href="/contact" className="hover:text-slate-700 transition-colors">Contact</Link>
             </div>
+          </div>
+          <div className="text-center text-xs text-slate-400">
+            <p className="mb-1">Developed by <strong>HikariTech</strong> - Casablanca, Morocco</p>
           </div>
         </div>
       </footer>

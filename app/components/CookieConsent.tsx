@@ -67,7 +67,7 @@ export default function CookieConsent() {
                         </Link>
                         {' '}and{' '}
                         <Link
-                            href="/privacy"
+                            href="/privacy-policy"
                             style={{ color: '#f59e0b', textDecoration: 'underline' }}
                         >
                             Privacy Policy

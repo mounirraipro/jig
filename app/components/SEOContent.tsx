@@ -686,7 +686,7 @@ export default function SEOContent() {
             <p>&copy; {new Date().getFullYear()} JigSolitaire. Free Online Jigsaw Solitaire Puzzle Game. All rights reserved.</p>
             <div className="flex flex-wrap justify-center gap-4 md:gap-6">
               <Link href="/about" className="hover:text-slate-700 transition-colors">About JigSolitaire</Link>
-              <Link href="/privacy" className="hover:text-slate-700 transition-colors">Privacy Policy</Link>
+              <Link href="/privacy-policy" className="hover:text-slate-700 transition-colors">Privacy Policy</Link>
               <Link href="/terms" className="hover:text-slate-700 transition-colors">Terms of Service</Link>
               <Link href="/cookies" className="hover:text-slate-700 transition-colors">Cookies Policy</Link>
               <Link href="/parents" className="hover:text-slate-700 transition-colors">Parents Guide</Link>

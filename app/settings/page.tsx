@@ -116,7 +116,7 @@ export default function SettingsPage() {
     const playerStats = getPlayerStats();
     const progress = getAllProgress();
     const musicManager = getBackgroundMusicManager();
-    
+
     setStats({
       puzzlesSolved: playerStats.totalPuzzlesSolved,
       starsEarned: playerStats.totalStarsEarned,
@@ -124,7 +124,7 @@ export default function SettingsPage() {
       currentStreak: playerStats.currentStreak,
       longestStreak: playerStats.longestStreak,
     });
-    
+
     setVolume(musicManager.getVolume());
   }, []);
 
@@ -133,7 +133,7 @@ export default function SettingsPage() {
     const newSettings = { ...settings, [key]: newValue };
     setSettings(newSettings);
     updateSetting(key, newValue);
-    
+
     // Sync mute with music manager
     if (key === 'muted') {
       const musicManager = getBackgroundMusicManager();
@@ -225,7 +225,7 @@ export default function SettingsPage() {
               value={!settings.muted}
               onToggle={() => handleToggle('muted')}
             />
-            
+
             {/* Volume Slider */}
             <div className="bg-white rounded-2xl p-5 shadow-sm border border-black/5">
               <div className="flex items-center gap-4 mb-4">
@@ -249,7 +249,7 @@ export default function SettingsPage() {
                   disabled={settings.muted}
                   className="volume-slider w-full h-2 rounded-full appearance-none cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed"
                   style={{
-                    background: settings.muted 
+                    background: settings.muted
                       ? '#E5E5E5'
                       : `linear-gradient(to right, #FFBF00 0%, #FFBF00 ${volume * 100}%, #E5E5E5 ${volume * 100}%, #E5E5E5 100%)`,
                   }}
@@ -331,7 +331,7 @@ export default function SettingsPage() {
           <div className="bg-white rounded-2xl overflow-hidden shadow-sm border border-black/5 divide-y divide-black/5">
             <LinkItem href="/about" label="About JigSolitaire" />
             <LinkItem href="/parents" label="Parents & Guardians" />
-            <LinkItem href="/privacy" label="Privacy Policy" />
+            <LinkItem href="/privacy-policy" label="Privacy Policy" />
             <LinkItem href="/terms" label="Terms of Service" />
             <LinkItem href="/cookies" label="Cookie Policy" />
             <LinkItem href="/contact" label="Contact Us" />
@@ -347,7 +347,7 @@ export default function SettingsPage() {
       {/* Clear Confirmation Modal */}
       {showClearConfirm && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
-          <div 
+          <div
             className="bg-white rounded-3xl p-6 max-w-sm w-full shadow-2xl"
             onClick={(e) => e.stopPropagation()}
           >
@@ -433,12 +433,11 @@ function SettingToggle({
   return (
     <div className="bg-white rounded-2xl p-4 sm:p-5 shadow-sm border border-black/5">
       <div className="flex items-center gap-4">
-        <div 
-          className={`w-11 h-11 shrink-0 rounded-xl flex items-center justify-center transition-all ${
-            value 
-              ? 'bg-linear-to-br from-amber-400 to-orange-500 text-white' 
+        <div
+          className={`w-11 h-11 shrink-0 rounded-xl flex items-center justify-center transition-all ${value
+              ? 'bg-linear-to-br from-amber-400 to-orange-500 text-white'
               : 'bg-[#F3F3F2] text-[#6A6A6A]'
-          }`}
+            }`}
         >
           {icon}
         </div>
@@ -450,9 +449,8 @@ function SettingToggle({
           onClick={onToggle}
           role="switch"
           aria-checked={value}
-          className={`relative w-14 h-8 shrink-0 rounded-full transition-all ${
-            value ? 'bg-linear-to-r from-amber-400 to-orange-500' : 'bg-[#E5E5E5]'
-          }`}
+          className={`relative w-14 h-8 shrink-0 rounded-full transition-all ${value ? 'bg-linear-to-r from-amber-400 to-orange-500' : 'bg-[#E5E5E5]'
+            }`}
         >
           <span
             className="absolute top-1 left-1 h-6 w-6 rounded-full bg-white shadow-md transition-transform duration-200"

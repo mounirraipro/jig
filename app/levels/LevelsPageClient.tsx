@@ -122,11 +122,11 @@ export default function LevelsPageClient() {
   if (isLoading) {
     return (
       <div className="flex min-h-screen items-center justify-center" style={{ background: 'var(--color-surface)' }}>
-        <div 
+        <div
           className="flex h-14 w-14 items-center justify-center rounded-full border-2"
           style={{ borderColor: 'var(--color-light-gray)' }}
         >
-          <div 
+          <div
             className="h-8 w-8 animate-spin rounded-full border-2 border-t-transparent"
             style={{ borderColor: 'var(--color-primary)' }}
           />
@@ -136,7 +136,7 @@ export default function LevelsPageClient() {
   }
 
   return (
-    <div 
+    <div
       className="min-h-screen"
       style={{ background: 'var(--color-surface)' }}
     >
@@ -162,14 +162,14 @@ export default function LevelsPageClient() {
           </div>
 
           {/* Main Header */}
-          <h1 
+          <h1
             className="text-3xl sm:text-4xl font-bold tracking-tight mb-4"
             style={{ color: 'var(--color-text-primary)' }}
           >
             JigSolitaire Puzzle Levels
           </h1>
           <p className="text-lg text-slate-600 max-w-2xl mb-6">
-            Browse all 77+ JigSolitaire jigsaw solitaire puzzles. Choose a level to start playing — 
+            Browse all 77+ JigSolitaire jigsaw solitaire puzzles. Choose a level to start playing —
             from beginner-friendly Discovery puzzles to expert Treasures challenges.
           </p>
 
@@ -206,10 +206,10 @@ export default function LevelsPageClient() {
             <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
               {collections.map((col) => {
                 const levelsInCollection = availableImages.slice(col.range[0] - 1, col.range[1]);
-                const completedInCollection = levelsInCollection.filter((_, i) => 
+                const completedInCollection = levelsInCollection.filter((_, i) =>
                   levelProgress.get(col.range[0] + i)?.completed
                 ).length;
-                
+
                 return (
                   <div key={col.name} className="p-4 bg-white rounded-xl border border-slate-200 hover:shadow-md transition-shadow">
                     <div className="flex items-center gap-3 mb-3">
@@ -232,9 +232,9 @@ export default function LevelsPageClient() {
             <h2 className="text-2xl font-bold text-slate-900 mb-6">All JigSolitaire Levels</h2>
           </div>
 
-          <div 
+          <div
             className="grid gap-4"
-            style={{ 
+            style={{
               gridTemplateColumns: 'repeat(auto-fill, minmax(100px, 1fr))',
             }}
           >
@@ -300,7 +300,7 @@ export default function LevelsPageClient() {
                         <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
                       </svg>
                     ) : (
-                      <span 
+                      <span
                         className="text-2xl sm:text-3xl font-bold"
                         style={{
                           color: 'var(--color-text-primary)',
@@ -326,29 +326,29 @@ export default function LevelsPageClient() {
           </h2>
           <div className="prose prose-slate max-w-none text-center">
             <p>
-              JigSolitaire features 77+ unique jigsaw solitaire puzzle levels organized into themed collections. 
-              Each level offers a carefully curated image that&apos;s been optimized for our unique swap-based puzzle mechanics. 
-              Start with the Discovery collection if you&apos;re new to JigSolitaire, or jump into harder collections if you&apos;re 
+              JigSolitaire features 77+ unique jigsaw solitaire puzzle levels organized into themed collections.
+              Each level offers a carefully curated image that&apos;s been optimized for our unique swap-based puzzle mechanics.
+              Start with the Discovery collection if you&apos;re new to JigSolitaire, or jump into harder collections if you&apos;re
               looking for a challenge.
             </p>
             <p>
-              Every 5th level (5, 10, 15, etc.) is an Expert-level challenge featuring three connected 4x4 puzzles 
-              that must be solved in sequence. These milestone levels are perfect for testing your JigSolitaire mastery 
+              Every 5th level (5, 10, 15, etc.) is an Expert-level challenge featuring three connected 4x4 puzzles
+              that must be solved in sequence. These milestone levels are perfect for testing your JigSolitaire mastery
               and earning bonus stars.
             </p>
             <p>
-              Your progress is saved automatically, so you can pick up right where you left off. 
+              Your progress is saved automatically, so you can pick up right where you left off.
               Earn up to 3 stars on each level by completing puzzles quickly — under 10 seconds for 3 stars!
             </p>
           </div>
 
           <div className="mt-12 text-center">
-            <Link 
-              href="/" 
+            <Link
+              href="/"
               className="inline-flex items-center gap-2 px-6 py-3 bg-amber-500 text-white font-bold rounded-full hover:bg-amber-600 transition-colors"
             >
               <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-                <path d="M6.5 5.5v9l7-4.5-7-4.5z"/>
+                <path d="M6.5 5.5v9l7-4.5-7-4.5z" />
               </svg>
               Play JigSolitaire Now
             </Link>
@@ -364,7 +364,7 @@ export default function LevelsPageClient() {
             <div className="flex flex-wrap justify-center gap-4 md:gap-6">
               <Link href="/" className="hover:text-slate-700 transition-colors">Play JigSolitaire</Link>
               <Link href="/about" className="hover:text-slate-700 transition-colors">About</Link>
-              <Link href="/privacy" className="hover:text-slate-700 transition-colors">Privacy</Link>
+              <Link href="/privacy-policy" className="hover:text-slate-700 transition-colors">Privacy</Link>
               <Link href="/contact" className="hover:text-slate-700 transition-colors">Contact</Link>
             </div>
           </div>

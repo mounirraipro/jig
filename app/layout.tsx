@@ -30,9 +30,9 @@ export const metadata: Metadata = {
     'unblocked puzzle game',
     'casual puzzle',
   ],
-  authors: [{ name: 'JigSolitaire Team' }],
-  creator: 'JigSolitaire',
-  publisher: 'JigSolitaire',
+  authors: [{ name: 'HikariTech' }],
+  creator: 'HikariTech',
+  publisher: 'HikariTech',
   applicationName: 'JigSolitaire',
   category: 'Games',
   openGraph: {
