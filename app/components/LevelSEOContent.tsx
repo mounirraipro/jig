@@ -166,6 +166,9 @@ export default function LevelSEOContent({ level, seoData }: LevelSEOContentProps
               </>
             )}
 
+            <h3>{seoData.spotlightHeading}</h3>
+            <p>{seoData.spotlightCopy}</p>
+
             <h3>About the JigSolitaire {seoData.collection} Collection</h3>
             <p>
               The {seoData.collection} collection in JigSolitaire features carefully curated jigsaw solitaire images designed for {
@@ -334,4 +337,3 @@ export default function LevelSEOContent({ level, seoData }: LevelSEOContentProps
     </section>
   );
 }
-
