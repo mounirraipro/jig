@@ -8,6 +8,8 @@ export interface LevelSEOData {
   intro: string;
   features: string[];
   tips: string[];
+  spotlightHeading: string;
+  spotlightCopy: string;
   difficulty: 'Easy' | 'Medium' | 'Hard' | 'Expert';
   estimatedTime: string;
   puzzleType: string;
@@ -80,6 +82,26 @@ function getTheme(level: number): { adjective: string; noun: string } {
   };
 }
 
+function getSpotlight(level: number, collection: string, theme: { adjective: string; noun: string }, difficulty: string, puzzleType: string): { heading: string; copy: string } {
+  const headings = [
+    `Level ${level} Spotlight`,
+    `Why Level ${level} Stands Out`,
+    `Level ${level} Puzzle Focus`,
+    `Your Level ${level} Highlight`,
+  ];
+  const copies = [
+    `This ${difficulty.toLowerCase()} ${puzzleType.toLowerCase()} highlights ${theme.adjective} ${collection.toLowerCase()} imagery and rewards steady, methodical swaps.`,
+    `Level ${level} leans into a ${theme.adjective} ${theme.noun} vibe, making it a great pick when you want a calm, focused JigSolitaire session.`,
+    `Expect ${collection.toLowerCase()} visuals with a ${theme.adjective} twist. If you like quick pattern matching, this level is built for that rhythm.`,
+    `The ${collection.toLowerCase()} collection shines here: Level ${level} pairs ${theme.adjective} visuals with a tidy ${puzzleType.toLowerCase()} layout.`,
+  ];
+
+  return {
+    heading: headings[level % headings.length],
+    copy: copies[level % copies.length],
+  };
+}
+
 export function getLevelSEOData(level: number): LevelSEOData {
   const collection = getCollection(level);
   const difficulty = getDifficulty(level);
@@ -87,6 +109,7 @@ export function getLevelSEOData(level: number): LevelSEOData {
   const puzzleType = getPuzzleType(level);
   const theme = getTheme(level);
   const isHard = level % 5 === 0;
+  const spotlight = getSpotlight(level, collection.name, theme, difficulty, puzzleType);
 
   const title = `Play JigSolitaire Level ${level} Online Free — ${collection.name} Jigsaw Solitaire Puzzle`;
   const description = `Play JigSolitaire Level ${level} free online! A ${theme.adjective} ${puzzleType.toLowerCase()} jigsaw solitaire puzzle from the ${collection.name} collection. ${difficulty} difficulty, ${estimatedTime}. No download, instant play on any device.`;
@@ -138,6 +161,8 @@ export function getLevelSEOData(level: number): LevelSEOData {
     intro,
     features,
     tips,
+    spotlightHeading: spotlight.heading,
+    spotlightCopy: spotlight.copy,
     difficulty,
     estimatedTime,
     puzzleType,
@@ -230,4 +255,3 @@ export function generateLevelStructuredData(level: number, baseUrl: string): obj
 
   return [webPageSchema, faqSchema];
 }
-

@@ -4,6 +4,7 @@ import "./globals.css";
 import CookieConsent from "./components/CookieConsent";
 
 const BASE_URL = 'https://jigsolitaire.online';
+const googleVerification = process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION;
 
 export const metadata: Metadata = {
   metadataBase: new URL(BASE_URL),
@@ -72,10 +73,7 @@ export const metadata: Metadata = {
   alternates: {
     canonical: BASE_URL,
   },
-  verification: {
-    // Add your verification codes here when available
-    // google: 'your-google-verification-code',
-  },
+  verification: googleVerification ? { google: googleVerification } : undefined,
 };
 
 export default function RootLayout({

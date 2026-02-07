@@ -7,7 +7,7 @@ Allow: /game
 Allow: /levels
 Allow: /level/
 Allow: /about
-Allow: /privacy
+Allow: /privacy-policy
 Allow: /terms
 Allow: /cookies
 Allow: /parents
@@ -32,7 +32,7 @@ Allow: /game
 Allow: /levels
 Allow: /level/
 Allow: /about
-Allow: /privacy
+Allow: /privacy-policy
 Allow: /terms
 Allow: /cookies
 Allow: /parents
