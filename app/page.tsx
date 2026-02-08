@@ -19,6 +19,7 @@ import Confetti from './components/Confetti';
 import SEOContent from './components/SEOContent';
 import MiniPlayer from './components/MiniPlayer';
 import AdUnit from './components/AdUnit';
+import Footer from './components/Footer';
 
 // Calculate stars from time
 function calculateStars(timeInSeconds: number): number {
@@ -1051,6 +1052,9 @@ function GamePageContent() {
           </div>
         </div>
       </div>
+
+      {/* Footer */}
+      <Footer />
     </div>
   );
 }

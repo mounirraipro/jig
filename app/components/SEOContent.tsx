@@ -679,22 +679,7 @@ export default function SEOContent() {
         </div>
       </div>
 
-      {/* Footer */}
-      <div className="py-8 border-t border-slate-200 bg-white">
-        <div className="max-w-5xl mx-auto px-6">
-          <div className="flex flex-col md:flex-row items-center justify-between gap-4 text-slate-500 text-sm">
-            <p>&copy; {new Date().getFullYear()} JigSolitaire. Free Online Jigsaw Solitaire Puzzle Game. All rights reserved.</p>
-            <div className="flex flex-wrap justify-center gap-4 md:gap-6">
-              <Link href="/about" className="hover:text-slate-700 transition-colors">About JigSolitaire</Link>
-              <Link href="/privacy-policy" className="hover:text-slate-700 transition-colors">Privacy Policy</Link>
-              <Link href="/terms" className="hover:text-slate-700 transition-colors">Terms of Service</Link>
-              <Link href="/cookies" className="hover:text-slate-700 transition-colors">Cookies Policy</Link>
-              <Link href="/parents" className="hover:text-slate-700 transition-colors">Parents Guide</Link>
-              <Link href="/contact" className="hover:text-slate-700 transition-colors">Contact Us</Link>
-            </div>
-          </div>
-        </div>
-      </div>
+
     </section>
   );
 }

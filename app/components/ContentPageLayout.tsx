@@ -3,6 +3,7 @@
 import React from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
+import Footer from './Footer';
 
 interface ContentPageLayoutProps {
   title: string;
@@ -110,24 +111,8 @@ export default function ContentPageLayout({ title, children }: ContentPageLayout
       </main>
 
       {/* Footer */}
-      <footer className="py-8 border-t border-slate-200 bg-white">
-        <div className="max-w-4xl mx-auto px-6">
-          <div className="flex flex-col md:flex-row items-center justify-between gap-4 text-slate-500 text-sm mb-6">
-            <p>&copy; {new Date().getFullYear()} jigsolitaire. All rights reserved.</p>
-            <div className="flex flex-wrap justify-center gap-4 md:gap-6">
-              <Link href="/about" className="hover:text-slate-700 transition-colors">About</Link>
-              <Link href="/privacy-policy" className="hover:text-slate-700 transition-colors">Privacy</Link>
-              <Link href="/terms" className="hover:text-slate-700 transition-colors">Terms</Link>
-              <Link href="/cookies" className="hover:text-slate-700 transition-colors">Cookies</Link>
-              <Link href="/parents" className="hover:text-slate-700 transition-colors">Parents</Link>
-              <Link href="/contact" className="hover:text-slate-700 transition-colors">Contact</Link>
-            </div>
-          </div>
-          <div className="text-center text-xs text-slate-400">
-            <p className="mb-1">Developed by <strong>HikariTech</strong> - Casablanca, Morocco</p>
-          </div>
-        </div>
-      </footer>
+      {/* Footer */}
+      <Footer />
     </div>
   );
 }
